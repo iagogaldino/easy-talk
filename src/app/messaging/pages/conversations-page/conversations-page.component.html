@@ -1,0 +1,66 @@
+<div class="conversations-page" [class.conversations-page--profile-open]="isProfilePanelOpen" [class.conversations-page--assistant-open]="isAssistantPanelOpen">
+  <nav class="conversations-page__nav">
+    <div class="conversations-page__nav-top">
+      <button mat-icon-button class="conversations-page__nav-avatar" aria-label="Perfil" disabled>
+        <mat-icon>account_circle</mat-icon>
+      </button>
+    </div>
+    <div class="conversations-page__nav-items">
+      <button
+        mat-icon-button
+        *ngFor="let item of navItems"
+        [class.conversations-page__nav-item--active]="item.active"
+        [attr.aria-label]="item.label"
+        (click)="item.action === 'assistant' ? handleAssistantToggle() : null"
+      >
+        <mat-icon>{{ item.icon }}</mat-icon>
+      </button>
+    </div>
+    <div class="conversations-page__nav-bottom">
+      <button mat-icon-button aria-label="Ajuda" disabled>
+        <mat-icon>help_outline</mat-icon>
+      </button>
+    </div>
+  </nav>
+
+  <section class="conversations-page__sidebar">
+    <ng-container *ngIf="conversations$ | async as conversations; else loading">
+      <app-chat-list
+        [conversations]="conversations"
+        [selectedConversationId]="(selectedConversationId$ | async) ?? null"
+        (conversationSelected)="handleConversationSelection($event)"
+      ></app-chat-list>
+    </ng-container>
+  </section>
+
+  <ng-container *ngIf="selectedConversation$ | async as conversation">
+    <section class="conversations-page__chat">
+      <app-chat-window
+        [conversation]="conversation"
+        (messageSent)="handleSendMessage($event)"
+        (profileRequested)="handleProfileRequested()"
+      ></app-chat-window>
+    </section>
+
+    <app-contact-profile
+      class="conversations-page__profile"
+      [conversation]="conversation"
+      [open]="isProfilePanelOpen"
+      (closed)="handleProfileClosed()"
+    ></app-contact-profile>
+  </ng-container>
+
+  <app-assistant-panel
+    class="conversations-page__assistant"
+    [open]="isAssistantPanelOpen"
+    [messages]="assistantMessages"
+    (closed)="handleAssistantClosed()"
+  ></app-assistant-panel>
+</div>
+
+<ng-template #loading>
+  <div class="conversations-page__loading">
+    <mat-spinner diameter="32"></mat-spinner>
+  </div>
+</ng-template>
+

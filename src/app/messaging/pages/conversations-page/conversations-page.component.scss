@@ -1,0 +1,135 @@
+.conversations-page {
+  display: grid;
+  grid-template-columns: 72px minmax(280px, 360px) 1fr;
+  min-height: 100vh;
+  height: 100vh;
+  background-color: var(--mat-sys-surface-container-low);
+  transition: grid-template-columns 220ms ease;
+}
+
+.conversations-page--profile-open {
+  grid-template-columns: 72px minmax(280px, 360px) 1fr minmax(280px, 320px);
+  overflow: hidden;
+}
+
+.conversations-page--assistant-open {
+  grid-template-columns: 72px minmax(280px, 360px) 1fr minmax(280px, 320px);
+  overflow: hidden;
+}
+
+.conversations-page--profile-open.conversations-page--assistant-open {
+  grid-template-columns: 72px minmax(280px, 360px) 1fr minmax(280px, 320px) minmax(280px, 320px);
+}
+
+.conversations-page__nav {
+  display: grid;
+  grid-template-rows: auto 1fr auto;
+  align-items: start;
+  justify-items: center;
+  gap: 1rem;
+  padding: 1rem 0.5rem;
+  background-color: var(--mat-sys-surface-container-high);
+  border-right: 1px solid var(--mat-sys-outline-variant);
+}
+
+.conversations-page__nav-avatar {
+  width: 48px;
+  height: 48px;
+  border-radius: 50%;
+  background: var(--mat-sys-primary-container);
+  color: var(--mat-sys-on-primary-container);
+}
+
+.conversations-page__nav-items {
+  display: flex;
+  flex-direction: column;
+  gap: 0.5rem;
+}
+
+.conversations-page__nav-items button {
+  width: 48px;
+  height: 48px;
+  border-radius: 16px;
+  color: var(--mat-sys-on-surface-variant);
+}
+
+.conversations-page__nav-item--active {
+  background-color: var(--mat-sys-primary-container);
+  color: var(--mat-sys-on-primary-container) !important;
+}
+
+.conversations-page__nav-bottom button {
+  color: var(--mat-sys-on-surface-variant);
+}
+
+.conversations-page__sidebar {
+  border-right: 1px solid var(--mat-sys-outline-variant);
+  background-color: var(--mat-sys-surface);
+  min-height: 0;
+  display: flex;
+  flex-direction: column;
+  overflow: hidden;
+}
+
+.conversations-page__chat {
+  min-height: 0;
+  display: flex;
+}
+
+.conversations-page__chat > app-chat-window {
+  flex: 1;
+  min-height: 0;
+}
+
+.conversations-page__profile {
+  height: 100%;
+  display: none;
+  overflow: hidden;
+}
+
+.conversations-page--profile-open .conversations-page__profile {
+  display: block;
+}
+
+.conversations-page__assistant {
+  height: 100%;
+  display: none;
+  overflow: hidden;
+}
+
+.conversations-page--assistant-open .conversations-page__assistant {
+  display: block;
+}
+
+.conversations-page--profile-open.conversations-page--assistant-open .conversations-page__assistant {
+  display: block;
+}
+
+.conversations-page__loading {
+  display: grid;
+  place-items: center;
+  padding: 2rem;
+}
+
+@media (max-width: 900px) {
+  .conversations-page,
+  .conversations-page--profile-open,
+  .conversations-page--assistant-open,
+  .conversations-page--profile-open.conversations-page--assistant-open {
+    grid-template-columns: 1fr;
+  }
+
+  .conversations-page__nav {
+    display: none;
+  }
+
+  .conversations-page__sidebar {
+    display: none;
+  }
+
+  .conversations-page__profile,
+  .conversations-page__assistant {
+    display: none !important;
+  }
+}
+

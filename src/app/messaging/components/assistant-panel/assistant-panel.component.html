@@ -1,0 +1,31 @@
+<aside class="assistant-panel" [class.assistant-panel--open]="open">
+  <header class="assistant-panel__header">
+    <button mat-icon-button aria-label="Fechar" (click)="close()">
+      <mat-icon>close</mat-icon>
+    </button>
+    <h2>Assistente IA</h2>
+  </header>
+
+  <section class="assistant-panel__body">
+    <div *ngFor="let message of messages" class="assistant-panel__message" [class.assistant-panel__message--agent]="message.author === 'agent'">
+      <p>{{ message.content }}</p>
+      <small>{{ message.timestamp | date: 'shortTime' }}</small>
+    </div>
+  </section>
+
+  <footer class="assistant-panel__composer">
+    <div class="assistant-panel__composer-shell">
+      <textarea
+        cdkTextareaAutosize
+        cdkAutosizeMinRows="1"
+        cdkAutosizeMaxRows="4"
+        [(ngModel)]="prompt"
+        placeholder="Pergunte algo ao assistente"
+        (keydown)="handleKeydown($event)"
+      ></textarea>
+      <button mat-icon-button color="primary" (click)="submit()" [disabled]="!canSubmit">
+        <mat-icon>send</mat-icon>
+      </button>
+    </div>
+  </footer>
+</aside>
