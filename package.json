@@ -1,12 +1,21 @@
 {
   "name": "easy-talk",
   "version": "0.0.0",
+  "main": "dist/electron/main.js",
   "scripts": {
     "ng": "ng",
     "start": "ng serve",
     "build": "ng build",
     "watch": "ng build --watch --configuration development",
-    "test": "ng test"
+    "test": "ng test",
+    "electron:main": "tsc -p electron/tsconfig.json",
+    "electron:main:watch": "tsc -p electron/tsconfig.json --watch",
+    "electron": "npm run build -- --base-href ./ && npm run electron:main && electron .",
+    "electron:start": "wait-on http://localhost:4200 && electron . --serve",
+    "electron:watch": "npm run electron:main && concurrently -k \"npm:electron:main:watch\" \"nodemon --watch dist/electron --ext js --exec \\\"npm run electron:start\\\"\"",
+    "electron:serve": "concurrently -k \"ng serve\" \"npm:electron:watch\"",
+    "electron:dev": "npm run electron:serve",
+    "electron:build": "npm run build -- --base-href ./ && npm run electron:main && electron-builder"
   },
   "prettier": {
     "printWidth": 100,
@@ -39,12 +48,31 @@
     "@angular/cli": "^20.1.0",
     "@angular/compiler-cli": "^20.1.0",
     "@types/jasmine": "~5.1.0",
+    "@types/node": "^20.14.10",
+    "concurrently": "^9.2.1",
+    "electron": "^28.3.0",
+    "nodemon": "^3.1.7",
+    "electron-builder": "^24.13.3",
     "jasmine-core": "~5.9.0",
     "karma": "~6.4.0",
     "karma-chrome-launcher": "~3.2.0",
     "karma-coverage": "~2.2.0",
     "karma-jasmine": "~5.1.0",
     "karma-jasmine-html-reporter": "~2.1.0",
-    "typescript": "~5.9.2"
+    "typescript": "~5.9.2",
+    "wait-on": "^7.2.0"
+  },
+  "build": {
+    "appId": "com.easy-talk.desktop",
+    "directories": {
+      "output": "dist/electron"
+    },
+    "files": [
+      "dist/easy-talk/**/*",
+      "dist/electron/**/*"
+    ],
+    "extraMetadata": {
+      "main": "dist/electron/main.js"
+    }
   }
 }
