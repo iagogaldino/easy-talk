@@ -1,59 +1,52 @@
 # EasyTalk
 
-This project was generated using [Angular CLI](https://github.com/angular/angular-cli) version 20.1.0.
+## Visão Geral
 
-## Development server
+O EasyTalk é o portal web que permitirá às equipes da empresa atender clientes via WhatsApp de forma centralizada, espelhando a experiência do WhatsApp Web, porém com recursos próprios de CRM. O front-end, construído em Angular, consumirá um backend proprietário que fará a ponte com as APIs oficiais do WhatsApp Business.
 
-To start a local development server, run:
+### Objetivos Principais
 
-```bash
-ng serve
+- Gerenciar múltiplas conversas simultâneas com clientes.
+- Enviar e receber mensagens em tempo real (texto, mídia, status).
+- Oferecer visão consolidada do histórico e informações do contato.
+- Facilitar o trabalho de atendimento com ações rápidas, filtros e métricas.
+
+## Escopo Inicial do Front-end
+
+- **Autenticação e autorização**: fluxo de login conectado ao backend, com guarda de rotas e interceptadores HTTP.
+- **Módulo de Conversas (MessagingModule)**: encapsula layout, componentes e serviços relacionados ao atendimento; futuro ponto de entrada para múltiplos canais.
+- **Mocks controlados**: pasta dedicada (`src/app/mocks/messaging`) para simular dados e serviços enquanto o backend é integrado, permitindo desenvolvimento paralelo.
+- **Comunicação em tempo real**: abstrações preparadas para WebSocket ou SSE, inicialmente operando com mocks.
+- **UI com Angular Material**: layout inspirado no WhatsApp Web (lista de conversas, painel de mensagens, detalhes do contato) com tema customizado.
+- **Estratégia de estado**: uso de serviços com RxJS ou `ComponentStore` dentro do módulo, garantindo isolamento e facilidade de manutenção.
+
+## Organização do Projeto
+
+```
+src/app/
+  core/               # Serviços globais (auth, interceptors, layout)
+  shared/             # Componentes, pipes e utilitários reutilizáveis
+  messaging/          # Módulo dedicado ao fluxo de atendimento
+    components/
+    pages/
+    services/
+    store/
+  mocks/
+    messaging/        # Dados e serviços mockados para desenvolvimento
 ```
 
-Once the server is running, open your browser and navigate to `http://localhost:4200/`. The application will automatically reload whenever you modify any of the source files.
+## Próximos Passos
 
-## Code scaffolding
+1. Criar `MessagingModule` com roteamento dedicado e layout base.
+2. Implementar serviços mockados que reflitam contratos do backend.
+3. Definir interfaces e modelos de dados (contato, conversa, mensagem).
+4. Construir componentes principais da interface (lista, chat, painel de detalhes).
+5. Integrar autenticação (quando endpoints estiverem disponíveis).
+6. Evoluir para integração real com backend e canais adicionais.
 
-Angular CLI includes powerful code scaffolding tools. To generate a new component, run:
+## Comandos Úteis
 
-```bash
-ng generate component component-name
-```
+- `npm start`: executa o servidor de desenvolvimento em `http://localhost:4200/`.
+- `npm run build`: gera build de produção em `dist/`.
 
-For a complete list of available schematics (such as `components`, `directives`, or `pipes`), run:
-
-```bash
-ng generate --help
-```
-
-## Building
-
-To build the project run:
-
-```bash
-ng build
-```
-
-This will compile your project and store the build artifacts in the `dist/` directory. By default, the production build optimizes your application for performance and speed.
-
-## Running unit tests
-
-To execute unit tests with the [Karma](https://karma-runner.github.io) test runner, use the following command:
-
-```bash
-ng test
-```
-
-## Running end-to-end tests
-
-For end-to-end (e2e) testing, run:
-
-```bash
-ng e2e
-```
-
-Angular CLI does not come with an end-to-end testing framework by default. You can choose one that suits your needs.
-
-## Additional Resources
-
-For more information on using the Angular CLI, including detailed command references, visit the [Angular CLI Overview and Command Reference](https://angular.dev/tools/cli) page.
+> _Observação_: por ora, o projeto não inclui pipelines CI/CD ou suíte completa de testes; o foco inicial está na estruturação do módulo de mensagens com mocks. Testes serão ativados após estabilização dos fluxos principais.
