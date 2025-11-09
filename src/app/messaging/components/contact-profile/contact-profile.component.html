@@ -37,7 +37,7 @@
         <mat-icon>videocam</mat-icon>
         Vídeo
       </button>
-      <button mat-stroked-button color="primary" disabled>
+      <button mat-stroked-button color="primary" (click)="handleVoiceCall()" [disabled]="!conversation">
         <mat-icon>call</mat-icon>
         Voz
       </button>

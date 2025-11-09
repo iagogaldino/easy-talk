@@ -11,7 +11,7 @@ async function createWindow(): Promise<void> {
     height: 800,
     minWidth: 960,
     minHeight: 600,
-    backgroundColor: '#f5f5f7',
+    backgroundColor: '#f2f3f5',
     webPreferences: {
       preload: join(__dirname, 'preload.js'),
       contextIsolation: true,
