@@ -1,0 +1,31 @@
+.widget-table {
+  padding: 1rem;
+  background-color: rgba(40, 40, 40, 0.6);
+  border-radius: 12px;
+  margin-bottom: 1rem;
+  overflow-x: auto;
+}
+
+.widget-table__title {
+  margin: 0 0 1rem 0;
+  font-size: 1.125rem;
+  font-weight: 600;
+  color: var(--mat-sys-on-surface);
+}
+
+.widget-table__table {
+  width: 100%;
+  background-color: transparent;
+}
+
+.widget-table__table th {
+  color: var(--mat-sys-on-surface-variant);
+  font-weight: 600;
+  border-bottom: 1px solid var(--mat-sys-outline-variant);
+}
+
+.widget-table__table td {
+  color: var(--mat-sys-on-surface);
+  border-bottom: 1px solid rgba(255, 255, 255, 0.05);
+}
+

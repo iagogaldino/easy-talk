@@ -1,0 +1,28 @@
+<div class="widget-chart">
+  <h3 *ngIf="widget.title" class="widget-chart__title">{{ widget.title }}</h3>
+  <div class="widget-chart__container">
+    <div class="widget-chart__bars" *ngIf="widget.chartType === 'bar' || widget.chartType === 'line'">
+      <div
+        *ngFor="let item of widget.data; trackBy: trackByLabel"
+        class="widget-chart__bar-item"
+      >
+        <div class="widget-chart__bar-label">{{ item.label }}</div>
+        <div class="widget-chart__bar-wrapper">
+          <div
+            class="widget-chart__bar"
+            [style.width.%]="(item.value / getMaxValue()) * 100"
+          >
+            <span class="widget-chart__bar-value">{{ item.value }}</span>
+          </div>
+        </div>
+      </div>
+    </div>
+    <div class="widget-chart__pie" *ngIf="widget.chartType === 'pie' || widget.chartType === 'doughnut'">
+      <div class="widget-chart__pie-item" *ngFor="let item of widget.data; trackBy: trackByLabel; let i = index">
+        <div class="widget-chart__pie-color" [style.background-color]="getColorForIndex(i)"></div>
+        <span class="widget-chart__pie-label">{{ item.label }}: {{ item.value }}</span>
+      </div>
+    </div>
+  </div>
+</div>
+

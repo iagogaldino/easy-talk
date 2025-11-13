@@ -1,0 +1,26 @@
+.widget-list {
+  padding: 1rem;
+  background-color: rgba(40, 40, 40, 0.6);
+  border-radius: 12px;
+  margin-bottom: 1rem;
+}
+
+.widget-list__title {
+  margin: 0 0 1rem 0;
+  font-size: 1.125rem;
+  font-weight: 600;
+  color: var(--mat-sys-on-surface);
+}
+
+.widget-list__ordered,
+.widget-list__unordered {
+  margin: 0;
+  padding-left: 1.5rem;
+  color: var(--mat-sys-on-surface);
+}
+
+.widget-list__item {
+  margin-bottom: 0.5rem;
+  line-height: 1.5;
+}
+

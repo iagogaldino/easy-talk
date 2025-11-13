@@ -1,0 +1,12 @@
+<div class="widget-list">
+  <h3 *ngIf="widget.title" class="widget-list__title">{{ widget.title }}</h3>
+  <ol *ngIf="widget.ordered; else unorderedList" class="widget-list__ordered">
+    <li *ngFor="let item of widget.items" class="widget-list__item">{{ item }}</li>
+  </ol>
+  <ng-template #unorderedList>
+    <ul class="widget-list__unordered">
+      <li *ngFor="let item of widget.items" class="widget-list__item">{{ item }}</li>
+    </ul>
+  </ng-template>
+</div>
+

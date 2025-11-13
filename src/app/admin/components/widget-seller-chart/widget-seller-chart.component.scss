@@ -1,0 +1,20 @@
+.widget-seller-chart {
+  padding: 1.5rem;
+  background-color: rgba(40, 40, 40, 0.6);
+  border-radius: 12px;
+  margin-bottom: 1rem;
+}
+
+.widget-seller-chart__title {
+  margin: 0 0 1.5rem 0;
+  font-size: 1.25rem;
+  font-weight: 600;
+  color: var(--mat-sys-on-surface);
+}
+
+.widget-seller-chart__container {
+  height: 450px;
+  position: relative;
+  padding-bottom: 20px;
+}
+

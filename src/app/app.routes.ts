@@ -16,6 +16,13 @@ export const routes: Routes = [
       ),
   },
   {
+    path: 'admin',
+    loadComponent: () =>
+      import('./admin/admin-page.component').then(
+        (m) => m.AdminPageComponent,
+      ),
+  },
+  {
     path: '**',
     redirectTo: '',
   },

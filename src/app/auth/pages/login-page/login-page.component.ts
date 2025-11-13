@@ -55,8 +55,14 @@ export class LoginPageComponent {
         localStorage.setItem('authToken', 'mock-token');
         localStorage.setItem('userEmail', this.email);
 
-        // Redirecionar para a página de conversas
-        await this.router.navigate(['/conversations']);
+        // Verificar se é login de admin
+        if (this.email.toLowerCase() === 'admin' && this.password === 'admin') {
+          // Redirecionar para a página de admin
+          await this.router.navigate(['/admin']);
+        } else {
+          // Redirecionar para a página de conversas
+          await this.router.navigate(['/conversations']);
+        }
       }
     } catch (err) {
       this.error = 'Erro ao fazer login. Tente novamente.';

@@ -1,0 +1,9 @@
+<div class="widget-metric">
+  <div class="widget-metric__value">{{ widget.value }}</div>
+  <div class="widget-metric__label">{{ widget.label }}</div>
+  <div *ngIf="widget.trend" class="widget-metric__trend" [class.widget-metric__trend--up]="widget.trend.direction === 'up'" [class.widget-metric__trend--down]="widget.trend.direction === 'down'">
+    <mat-icon>{{ widget.trend.direction === 'up' ? 'trending_up' : 'trending_down' }}</mat-icon>
+    <span>{{ getTrendValue() }}%</span>
+  </div>
+</div>
+

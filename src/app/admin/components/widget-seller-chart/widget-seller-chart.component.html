@@ -1,0 +1,12 @@
+<div class="widget-seller-chart">
+  <h3 *ngIf="widget.title" class="widget-seller-chart__title">{{ widget.title }}</h3>
+  <div class="widget-seller-chart__container">
+    <canvas baseChart
+            [data]="barChartData"
+            [options]="barChartOptions"
+            [type]="barChartType"
+            [plugins]="chartPlugins">
+    </canvas>
+  </div>
+</div>
+

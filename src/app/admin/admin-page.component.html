@@ -1,0 +1,59 @@
+<div class="admin-page">
+  <div class="admin-page__left">
+    <section class="admin-page__messages">
+      <div *ngIf="messages.length === 0" class="admin-page__empty">
+        <mat-icon>chat</mat-icon>
+        <p>Nenhuma mensagem ainda</p>
+        <p class="admin-page__hint">Tente comandos como: "criar card", "gráfico", "tabela", "métrica"</p>
+      </div>
+      <div
+        *ngFor="let msg of messages; trackBy: trackByIndex"
+        class="admin-page__message"
+        [class.admin-page__message--user]="msg.isUser"
+        [class.admin-page__message--ai]="!msg.isUser"
+      >
+        <div class="admin-page__message-content">{{ msg.content }}</div>
+      </div>
+    </section>
+
+    <footer class="admin-page__composer">
+      <div class="admin-page__composer-shell">
+        <textarea
+          class="admin-page__composer-input"
+          cdkTextareaAutosize
+          cdkAutosizeMinRows="1"
+          cdkAutosizeMaxRows="5"
+          [(ngModel)]="message"
+          placeholder="Digite uma mensagem ou comando para criar widgets..."
+          (keydown)="handleKeydown($event)"
+        ></textarea>
+
+        <button
+          mat-mini-fab
+          color="primary"
+          class="admin-page__composer-send"
+          (click)="hasMessage ? sendMessage() : null"
+          [disabled]="!hasMessage"
+          aria-label="Enviar mensagem"
+        >
+          <mat-icon>send</mat-icon>
+        </button>
+      </div>
+    </footer>
+  </div>
+
+  <aside class="admin-page__widgets">
+    <div *ngIf="widgets.length === 0" class="admin-page__widgets-empty">
+      <mat-icon>widgets</mat-icon>
+      <p>Nenhum widget criado ainda</p>
+      <p class="admin-page__hint">Use comandos no chat para criar widgets</p>
+    </div>
+    <div
+      *ngFor="let widget of widgets; trackBy: trackByWidgetId"
+      class="admin-page__widget-item"
+    >
+      <app-widget-renderer [widget]="widget"></app-widget-renderer>
+    </div>
+  </aside>
+</div>
+
