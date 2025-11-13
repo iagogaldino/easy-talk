@@ -3,7 +3,6 @@
     <button mat-icon-button aria-label="Voltar" (click)="close()">
       <mat-icon>close</mat-icon>
     </button>
-    <h2>Visão geral</h2>
   </header>
 
   <section class="contact-profile__body" *ngIf="conversation as convo">
@@ -22,9 +21,6 @@
           {{ convo.contactName[0] }}
         </div>
       </ng-template>
-      <button mat-icon-button aria-label="Editar contato" disabled>
-        <mat-icon>edit</mat-icon>
-      </button>
     </div>
 
     <div class="contact-profile__identity">
@@ -33,38 +29,10 @@
     </div>
 
     <div class="contact-profile__actions">
-      <button mat-stroked-button color="primary" disabled>
-        <mat-icon>videocam</mat-icon>
-        Vídeo
-      </button>
       <button mat-stroked-button color="primary" (click)="handleVoiceCall()" [disabled]="!conversation">
         <mat-icon>call</mat-icon>
-        Voz
+        Ligar
       </button>
     </div>
-
-    <dl class="contact-profile__details">
-      <div>
-        <dt>Recado</dt>
-        <dd>{{ convo.profile?.status ?? 'Sem recado definido' }}</dd>
-      </div>
-      <div>
-        <dt>Número de telefone</dt>
-        <dd>{{ convo.profile?.phoneNumber ?? convo.contactNumber }}</dd>
-      </div>
-      <div>
-        <dt>Mensagens temporárias</dt>
-        <dd>{{ convo.profile?.temporaryMessages === 'enabled' ? 'Ativadas' : 'Desativadas' }}</dd>
-      </div>
-    </dl>
-
-    <nav class="contact-profile__menu">
-      <button mat-button disabled><mat-icon>photo_library</mat-icon> Mídia</button>
-      <button mat-button disabled><mat-icon>attach_file</mat-icon> Arquivos</button>
-      <button mat-button disabled><mat-icon>link</mat-icon> Links</button>
-      <button mat-button disabled><mat-icon>event</mat-icon> Eventos</button>
-      <button mat-button disabled><mat-icon>lock</mat-icon> Criptografia</button>
-      <button mat-button disabled><mat-icon>groups</mat-icon> Grupos</button>
-    </nav>
   </section>
 </aside>

@@ -15,37 +15,175 @@ html {
     typography: Roboto,
     density: 0,
   ));
+  color-scheme: dark;
 }
 
 body {
-  // Default the application to a light color theme. This can be changed to
-  // `dark` to enable the dark color theme, or to `light dark` to defer to the
-  // user's system settings.
-  color-scheme: light;
+  // Dark color theme
+  color-scheme: dark;
 
   // Set a default background, font and text colors for the application using
   // Angular Material's system-level CSS variables. Learn more about these
   // variables at https://material.angular.dev/guide/system-variables
-  background-color: var(--mat-sys-surface);
+  background: linear-gradient(135deg, #1a1a1a 0%, #1e1e1e 50%, #222222 100%);
   color: var(--mat-sys-on-surface);
   font: var(--mat-sys-body-medium);
 
   // Reset the user agent margin.
   margin: 0;
 }
+
 /* You can add global styles to this file, and also import other style files */
 
-html, body { height: 100%; }
-body { margin: 0; font-family: Roboto, "Helvetica Neue", sans-serif; }
+html, body {
+  height: 100%;
+  margin: 0;
+  font-family: Roboto, "Helvetica Neue", sans-serif;
+}
+
+// Variáveis de tema customizáveis para facilitar mudanças futuras
+:root {
+  --app-background-gradient-start: var(--mat-sys-surface-container-lowest);
+  --app-background-gradient-end: var(--mat-sys-surface-container-low);
+  --app-surface-color: var(--mat-sys-surface);
+  --app-on-surface-color: var(--mat-sys-on-surface);
+}
 
 .voice-dialog-panel {
-  --mdc-dialog-container-color: #f4f5f7;
+  --mdc-dialog-container-color: #2a2a2a;
   --mdc-dialog-container-elevation: 24;
 }
 
 .voice-dialog-panel .mat-mdc-dialog-surface {
-  background-color: #f4f5f7 !important;
+  background-color: #2a2a2a !important;
   color: var(--mat-sys-on-surface);
-  box-shadow: 0 18px 32px rgba(15, 23, 42, 0.2);
+  box-shadow: 0 18px 32px rgba(0, 0, 0, 0.5);
   backdrop-filter: none;
+}
+
+.dialer-dialog-panel {
+  --mdc-dialog-container-color: #2a2a2a;
+  --mdc-dialog-container-elevation: 24;
+}
+
+.dialer-dialog-panel .mat-mdc-dialog-surface {
+  background-color: #2a2a2a !important;
+  color: var(--mat-sys-on-surface);
+  box-shadow: 0 18px 32px rgba(0, 0, 0, 0.5);
+  border-radius: 24px;
+  backdrop-filter: none;
+  opacity: 1 !important;
+  overflow-x: hidden !important;
+}
+
+.dialer-dialog-panel .mat-mdc-dialog-container {
+  background-color: rgba(0, 0, 0, 0.7) !important;
+  overflow-x: hidden !important;
+}
+
+.dialer-dialog-panel .mat-mdc-dialog-content {
+  overflow-x: hidden !important;
+  max-width: 100%;
+}
+
+.settings-dialog-panel {
+  --mdc-dialog-container-color: #2a2a2a;
+  --mdc-dialog-container-elevation: 24;
+}
+
+.settings-dialog-panel .mat-mdc-dialog-surface {
+  background-color: #2a2a2a !important;
+  color: var(--mat-sys-on-surface);
+  box-shadow: 0 18px 32px rgba(0, 0, 0, 0.5);
+  border-radius: 24px;
+  backdrop-filter: none;
+  opacity: 1 !important;
+}
+
+// Estilos customizados para scrollbars - Design elegante e moderno
+* {
+  scrollbar-width: thin;
+  scrollbar-color: rgba(120, 120, 120, 0.3) transparent;
+}
+
+*::-webkit-scrollbar {
+  width: 10px;
+  height: 10px;
+}
+
+*::-webkit-scrollbar-track {
+  background: transparent;
+  border-radius: 10px;
+  margin: 4px;
+}
+
+*::-webkit-scrollbar-thumb {
+  background: linear-gradient(180deg, rgba(120, 120, 120, 0.3), rgba(100, 100, 100, 0.3));
+  border-radius: 10px;
+  border: 2px solid transparent;
+  background-clip: padding-box;
+  transition: all 0.2s ease;
+  min-height: 30px;
+}
+
+*::-webkit-scrollbar-thumb:hover {
+  background: linear-gradient(180deg, rgba(150, 150, 150, 0.5), rgba(130, 130, 130, 0.5));
+  background-clip: padding-box;
+}
+
+*::-webkit-scrollbar-thumb:active {
+  background: linear-gradient(180deg, rgba(180, 180, 180, 0.7), rgba(160, 160, 160, 0.7));
+  background-clip: padding-box;
+}
+
+// Scrollbar para elementos com fundo escuro - mais visível
+.chat-window__messages,
+.conversations-page__sidebar,
+.contact-profile__body,
+.assistant-panel__body,
+mat-nav-list,
+.dialer-dialog {
+  scrollbar-width: thin;
+  scrollbar-color: rgba(150, 150, 150, 0.5) transparent;
+}
+
+.chat-window__messages::-webkit-scrollbar,
+.conversations-page__sidebar::-webkit-scrollbar,
+.contact-profile__body::-webkit-scrollbar,
+.assistant-panel__body::-webkit-scrollbar,
+mat-nav-list::-webkit-scrollbar,
+.dialer-dialog::-webkit-scrollbar {
+  width: 10px;
+}
+
+.chat-window__messages::-webkit-scrollbar-thumb,
+.conversations-page__sidebar::-webkit-scrollbar-thumb,
+.contact-profile__body::-webkit-scrollbar-thumb,
+.assistant-panel__body::-webkit-scrollbar-thumb,
+mat-nav-list::-webkit-scrollbar-thumb,
+.dialer-dialog::-webkit-scrollbar-thumb {
+  background: linear-gradient(180deg, rgba(150, 150, 150, 0.5), rgba(130, 130, 130, 0.5));
+  border-radius: 10px;
+  border: 2px solid transparent;
+  background-clip: padding-box;
+}
+
+.chat-window__messages::-webkit-scrollbar-thumb:hover,
+.conversations-page__sidebar::-webkit-scrollbar-thumb:hover,
+.contact-profile__body::-webkit-scrollbar-thumb:hover,
+.assistant-panel__body::-webkit-scrollbar-thumb:hover,
+mat-nav-list::-webkit-scrollbar-thumb:hover,
+.dialer-dialog::-webkit-scrollbar-thumb:hover {
+  background: linear-gradient(180deg, rgba(180, 180, 180, 0.7), rgba(160, 160, 160, 0.7));
+  background-clip: padding-box;
+}
+
+.chat-window__messages::-webkit-scrollbar-thumb:active,
+.conversations-page__sidebar::-webkit-scrollbar-thumb:active,
+.contact-profile__body::-webkit-scrollbar-thumb:active,
+.assistant-panel__body::-webkit-scrollbar-thumb:active,
+mat-nav-list::-webkit-scrollbar-thumb:active,
+.dialer-dialog::-webkit-scrollbar-thumb:active {
+  background: linear-gradient(180deg, rgba(200, 200, 200, 0.9), rgba(180, 180, 180, 0.9));
+  background-clip: padding-box;
 }

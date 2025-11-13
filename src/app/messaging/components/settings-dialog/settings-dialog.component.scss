@@ -1,0 +1,85 @@
+.settings-dialog {
+  padding: 0;
+  min-width: 320px;
+  max-width: 400px;
+}
+
+.settings-dialog__header {
+  padding: 1.5rem 1.5rem 1rem;
+  border-bottom: 1px solid var(--mat-sys-outline-variant);
+}
+
+.settings-dialog__title {
+  margin: 0;
+  font-size: 1.5rem;
+  font-weight: 600;
+  color: var(--mat-sys-on-surface);
+}
+
+.settings-dialog__list {
+  padding: 0.5rem 0;
+  display: flex;
+  flex-direction: column;
+}
+
+.settings-dialog__item {
+  width: 100%;
+  justify-content: flex-start;
+  padding: 0.75rem 1.5rem;
+  color: var(--mat-sys-on-surface);
+  transition: background-color 0.2s ease;
+  display: flex;
+  align-items: center;
+  gap: 1rem;
+  border-radius: 0;
+  text-align: left;
+}
+
+.settings-dialog__item:hover {
+  background-color: rgba(255, 255, 255, 0.05);
+}
+
+.settings-dialog__item mat-icon {
+  color: var(--mat-sys-on-surface-variant);
+  font-size: 1.5rem;
+  width: 1.5rem;
+  height: 1.5rem;
+}
+
+.settings-dialog__item--danger {
+  color: #ef5350 !important;
+}
+
+.settings-dialog__item--danger mat-icon {
+  color: #ef5350 !important;
+}
+
+.settings-dialog__actions {
+  padding: 1rem 1.5rem 1.5rem;
+  display: flex;
+  justify-content: center;
+}
+
+.settings-dialog__logout {
+  width: 100%;
+  padding: 0.75rem;
+  border-radius: 12px;
+  color: #ef5350;
+  font-weight: 600;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 0.5rem;
+  transition: all 0.2s ease;
+}
+
+.settings-dialog__logout:hover {
+  background-color: rgba(239, 83, 80, 0.1);
+}
+
+.settings-dialog__logout mat-icon {
+  font-size: 1.25rem;
+  width: 1.25rem;
+  height: 1.25rem;
+}
+

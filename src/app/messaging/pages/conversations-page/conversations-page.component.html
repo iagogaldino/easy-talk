@@ -11,14 +11,14 @@
         *ngFor="let item of navItems"
         [class.conversations-page__nav-item--active]="item.active"
         [attr.aria-label]="item.label"
-        (click)="item.action === 'assistant' ? handleAssistantToggle() : null"
+        (click)="handleNavItemClick(item)"
       >
         <mat-icon>{{ item.icon }}</mat-icon>
       </button>
     </div>
     <div class="conversations-page__nav-bottom">
-      <button mat-icon-button aria-label="Ajuda" disabled>
-        <mat-icon>help_outline</mat-icon>
+      <button mat-icon-button aria-label="Configurações" (click)="openSettingsDialog()">
+        <mat-icon>settings</mat-icon>
       </button>
     </div>
   </nav>

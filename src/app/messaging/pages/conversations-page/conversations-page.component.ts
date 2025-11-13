@@ -1,6 +1,7 @@
 import { CommonModule } from '@angular/common';
 import { ChangeDetectionStrategy, Component, OnInit } from '@angular/core';
 import { MatButtonModule } from '@angular/material/button';
+import { MatDialog } from '@angular/material/dialog';
 import { MatIconModule } from '@angular/material/icon';
 import { MatProgressSpinnerModule } from '@angular/material/progress-spinner';
 import { Observable } from 'rxjs';
@@ -11,12 +12,14 @@ import { ChatListComponent } from '../../components/chat-list/chat-list.componen
 import { ChatWindowComponent } from '../../components/chat-window/chat-window.component';
 import { ContactProfileComponent } from '../../components/contact-profile/contact-profile.component';
 import { AssistantPanelComponent } from '../../components/assistant-panel/assistant-panel.component';
+import { DialerDialogComponent } from '../../components/dialer/dialer-dialog.component';
+import { SettingsDialogComponent } from '../../components/settings-dialog/settings-dialog.component';
 
 interface NavItem {
   icon: string;
   label: string;
   active?: boolean;
-  action?: 'assistant';
+  action?: 'assistant' | 'dialer';
 }
 
 @Component({
@@ -69,15 +72,14 @@ export class ConversationsPageComponent implements OnInit {
   protected readonly navItems: NavItem[] = [
     { icon: 'forum', label: 'Conversas', active: true },
     { icon: 'smart_toy', label: 'Assistente IA', action: 'assistant' },
-    { icon: 'call', label: 'Chamadas' },
-    { icon: 'groups', label: 'Comunidades' },
-    { icon: 'explore', label: 'Status' },
-    { icon: 'star', label: 'Favoritos' },
+    { icon: 'call', label: 'Chamadas', action: 'dialer' },
     { icon: 'delete', label: 'Arquivados' },
-    { icon: 'settings', label: 'Configurações' },
   ];
 
-  constructor(private readonly conversationsService: ConversationsService) {}
+  constructor(
+    private readonly conversationsService: ConversationsService,
+    private readonly dialog: MatDialog,
+  ) {}
 
   ngOnInit(): void {
     this.conversations$ = this.conversationsService.conversations$;
@@ -111,6 +113,39 @@ export class ConversationsPageComponent implements OnInit {
 
   protected handleAssistantClosed(): void {
     this.isAssistantPanelOpen = false;
+  }
+
+  protected handleNavItemClick(item: NavItem): void {
+    if (item.action === 'assistant') {
+      this.handleAssistantToggle();
+    } else if (item.action === 'dialer') {
+      this.openDialerDialog();
+    }
+  }
+
+  protected openSettingsDialog(): void {
+    this.dialog.open(SettingsDialogComponent, {
+      width: '400px',
+      maxWidth: '90vw',
+      panelClass: 'settings-dialog-panel',
+      disableClose: false,
+    });
+  }
+
+  private openDialerDialog(): void {
+    const dialogRef = this.dialog.open(DialerDialogComponent, {
+      width: '420px',
+      maxWidth: '90vw',
+      panelClass: 'dialer-dialog-panel',
+      disableClose: false,
+    });
+
+    dialogRef.afterClosed().subscribe((result) => {
+      if (result?.phoneNumber) {
+        // Aqui você pode implementar a lógica de iniciar a chamada
+        console.log('Número discado:', result.phoneNumber);
+      }
+    });
   }
 }
 

@@ -60,9 +60,6 @@
         <button mat-icon-button class="chat-window__icon-button" aria-label="Anexar arquivo" disabled>
           <mat-icon>attach_file</mat-icon>
         </button>
-        <button mat-icon-button class="chat-window__icon-button" aria-label="Adicionar atalho" disabled>
-          <mat-icon>add</mat-icon>
-        </button>
       </div>
 
       <textarea
@@ -75,20 +72,16 @@
         (keydown)="handleComposerKeydown($event)"
       ></textarea>
 
-      <button mat-icon-button class="chat-window__icon-button" aria-label="Enviar sticker" disabled>
-        <mat-icon>image</mat-icon>
+      <button
+        mat-mini-fab
+        color="primary"
+        class="chat-window__composer-send"
+        (click)="hasDraft ? submitMessage() : null"
+        [disabled]="!hasDraft"
+      >
+        <mat-icon>{{ hasDraft ? 'send' : 'mic' }}</mat-icon>
       </button>
     </div>
-
-    <button
-      mat-mini-fab
-      color="primary"
-      class="chat-window__composer-send"
-      (click)="hasDraft ? submitMessage() : null"
-      [disabled]="!hasDraft"
-    >
-      <mat-icon>{{ hasDraft ? 'send' : 'mic' }}</mat-icon>
-    </button>
   </footer>
 </ng-container>
 
