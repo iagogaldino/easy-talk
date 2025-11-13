@@ -1,12 +1,15 @@
 import { CommonModule } from '@angular/common';
-import { Component } from '@angular/core';
+import { Component, ChangeDetectorRef } from '@angular/core';
 import { FormsModule } from '@angular/forms';
+import { Router } from '@angular/router';
 import { TextFieldModule } from '@angular/cdk/text-field';
 import { MatIconModule } from '@angular/material/icon';
 import { MatButtonModule } from '@angular/material/button';
 import { ChatMessage, Widget } from './models/widget.model';
 import { WidgetInterpreterService } from './services/widget-interpreter.service';
+import { WidgetService } from './services/widget.service';
 import { WidgetRendererComponent } from './components/widget-renderer/widget-renderer.component';
+import { Assets } from '../core/constants/assets.enum';
 
 @Component({
   selector: 'app-admin-page',
@@ -26,8 +29,30 @@ export class AdminPageComponent {
   protected message = '';
   protected messages: ChatMessage[] = [];
   protected widgets: Widget[] = [];
+  protected activeWidgetId: string | null = null;
+  protected logoLoaded = true; // Tenta carregar a logo primeiro, se falhar mostra o fallback
+  protected readonly logoPath = Assets.LOGO_EMPRESA;
 
-  constructor(private readonly widgetInterpreter: WidgetInterpreterService) {}
+  protected onLogoError(): void {
+    this.logoLoaded = false;
+    this.cdr.detectChanges();
+  }
+
+  constructor(
+    private readonly widgetInterpreter: WidgetInterpreterService,
+    private readonly widgetService: WidgetService,
+    private readonly cdr: ChangeDetectorRef,
+    private readonly router: Router,
+  ) {
+    // Inicializa com o widget de menu de widgets
+    this.initializeDefaultWidget();
+  }
+
+  private initializeDefaultWidget(): void {
+    const widgetsMenuWidget = this.widgetService.createWidgetsMenuWidget();
+    this.widgets.push(widgetsMenuWidget);
+    this.activeWidgetId = widgetsMenuWidget.id;
+  }
 
   protected get hasMessage(): boolean {
     return this.message.trim().length > 0;
@@ -55,6 +80,8 @@ export class AdminPageComponent {
     if (widget) {
       // Adiciona widget à área de widgets
       this.widgets.push(widget);
+      // Define como aba ativa
+      this.activeWidgetId = widget.id;
       
       // Adiciona mensagem da IA confirmando criação
       const aiMessage: ChatMessage = {
@@ -91,6 +118,60 @@ export class AdminPageComponent {
 
   protected trackByWidgetId(_index: number, widget: Widget): string {
     return widget.id;
+  }
+
+  protected onSellerClick(seller: { name: string; clientsCount: number; avatar?: string; email?: string; department?: string }): void {
+    const sellerProfileWidget = this.widgetService.createSellerProfileWidget(seller.name);
+    
+    if (sellerProfileWidget) {
+      this.widgets.push(sellerProfileWidget);
+      this.activeWidgetId = sellerProfileWidget.id;
+      // Força a detecção de mudanças para atualizar a view imediatamente
+      this.cdr.detectChanges();
+    }
+  }
+
+  protected removeWidget(widgetId: string): void {
+    this.widgets = this.widgets.filter(w => w.id !== widgetId);
+    
+    // Se a aba fechada era a ativa, ativa a última aba ou null
+    if (this.activeWidgetId === widgetId) {
+      this.activeWidgetId = this.widgets.length > 0 ? this.widgets[this.widgets.length - 1].id : null;
+    }
+  }
+
+  protected handleWidgetRequest(command: string): void {
+    // Simula o envio de uma mensagem com o comando do widget
+    const widget = this.widgetInterpreter.interpretMessage(command);
+    
+    if (widget) {
+      this.widgets.push(widget);
+      this.activeWidgetId = widget.id;
+      this.cdr.detectChanges();
+    }
+  }
+
+  protected setActiveWidget(widgetId: string): void {
+    this.activeWidgetId = widgetId;
+  }
+
+  protected getWidgetTitle(widget: Widget): string {
+    return widget.title || `Widget ${widget.type}`;
+  }
+
+  protected navigateToConversations(): void {
+    // Marca no localStorage que está vindo do admin
+    sessionStorage.setItem('fromAdmin', 'true');
+    this.router.navigate(['/conversations']);
+  }
+
+  protected handleLogout(): void {
+    // Limpar dados de autenticação
+    localStorage.removeItem('authToken');
+    localStorage.removeItem('userEmail');
+
+    // Redirecionar para o login
+    this.router.navigate(['/']);
   }
 
   private generateId(): string {

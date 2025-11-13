@@ -1,0 +1,74 @@
+.widget-funnel-chart {
+  padding: 1.5rem;
+  background-color: rgba(40, 40, 40, 0.6);
+  border-radius: 12px;
+  margin-bottom: 1rem;
+  backdrop-filter: blur(10px);
+}
+
+.widget-funnel-chart__title {
+  margin: 0 0 1.5rem 0;
+  font-size: 1.25rem;
+  font-weight: 600;
+  color: var(--mat-sys-on-surface);
+}
+
+.widget-funnel-chart__container {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 0.75rem;
+  padding: 1rem 0;
+}
+
+.widget-funnel-chart__stage {
+  position: relative;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  transition: all 0.3s ease;
+  
+  &:hover {
+    transform: scale(1.02);
+  }
+}
+
+.widget-funnel-chart__stage-label {
+  position: absolute;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  width: 100%;
+  padding: 0 1rem;
+  z-index: 2;
+  color: #fff;
+  font-weight: 600;
+}
+
+.widget-funnel-chart__stage-name {
+  font-size: 0.95rem;
+  flex: 1;
+}
+
+.widget-funnel-chart__stage-value {
+  font-size: 1.1rem;
+  margin: 0 1rem;
+}
+
+.widget-funnel-chart__stage-percentage {
+  font-size: 0.85rem;
+  opacity: 0.8;
+}
+
+.widget-funnel-chart__stage-bar {
+  width: 100%;
+  background: linear-gradient(135deg, rgba(37, 99, 235, 0.8), rgba(59, 130, 246, 0.8));
+  border-radius: 8px;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.2);
+  transition: all 0.3s ease;
+  
+  &:hover {
+    box-shadow: 0 4px 12px rgba(37, 99, 235, 0.4);
+  }
+}
+

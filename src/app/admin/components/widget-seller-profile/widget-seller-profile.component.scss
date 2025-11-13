@@ -1,0 +1,129 @@
+.widget-seller-profile {
+  padding: 1.5rem;
+  background-color: rgba(40, 40, 40, 0.6);
+  border-radius: 12px;
+  margin-bottom: 1rem;
+  backdrop-filter: blur(10px);
+}
+
+.widget-seller-profile__header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 1.5rem;
+}
+
+.widget-seller-profile__title {
+  margin: 0;
+  font-size: 1.25rem;
+  font-weight: 600;
+  color: var(--mat-sys-on-surface);
+}
+
+.widget-seller-profile__close {
+  color: rgba(255, 255, 255, 0.7);
+  
+  &:hover {
+    color: rgba(255, 255, 255, 1);
+  }
+}
+
+.widget-seller-profile__content {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 1.5rem;
+}
+
+.widget-seller-profile__avatar {
+  width: 120px;
+  height: 120px;
+  border-radius: 50%;
+  overflow: hidden;
+  border: 3px solid rgba(37, 99, 235, 0.5);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background-color: rgba(37, 99, 235, 0.1);
+
+  img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+  }
+}
+
+.widget-seller-profile__avatar-placeholder {
+  width: 100%;
+  height: 100%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background: linear-gradient(135deg, rgba(37, 99, 235, 0.8), rgba(59, 130, 246, 0.8));
+  color: #fff;
+  font-size: 3rem;
+  font-weight: bold;
+}
+
+.widget-seller-profile__info {
+  width: 100%;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 1rem;
+}
+
+.widget-seller-profile__name {
+  margin: 0;
+  font-size: 1.5rem;
+  font-weight: 600;
+  color: var(--mat-sys-on-surface);
+}
+
+.widget-seller-profile__detail {
+  display: flex;
+  align-items: center;
+  gap: 0.75rem;
+  width: 100%;
+  padding: 0.75rem;
+  background-color: rgba(255, 255, 255, 0.05);
+  border-radius: 8px;
+
+  mat-icon {
+    color: rgba(37, 99, 235, 0.8);
+    font-size: 20px;
+    width: 20px;
+    height: 20px;
+  }
+
+  span {
+    color: var(--mat-sys-on-surface);
+    font-size: 0.95rem;
+  }
+}
+
+.widget-seller-profile__metric {
+  text-align: center;
+  padding: 1.5rem;
+  background: linear-gradient(135deg, rgba(37, 99, 235, 0.1), rgba(59, 130, 246, 0.1));
+  border-radius: 12px;
+  width: 100%;
+  border: 1px solid rgba(37, 99, 235, 0.2);
+  margin-top: 0.5rem;
+}
+
+.widget-seller-profile__metric-value {
+  font-size: 3rem;
+  font-weight: 700;
+  color: rgba(37, 99, 235, 1);
+  line-height: 1;
+  margin-bottom: 0.5rem;
+}
+
+.widget-seller-profile__metric-label {
+  font-size: 0.9rem;
+  color: rgba(255, 255, 255, 0.7);
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
+}
+

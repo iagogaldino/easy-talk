@@ -1,0 +1,12 @@
+<div class="widget-region-chart">
+  <h3 *ngIf="widget.title" class="widget-region-chart__title">{{ widget.title }}</h3>
+  <div class="widget-region-chart__container">
+    <canvas 
+      baseChart
+      [data]="chartData"
+      [options]="chartOptions"
+      [type]="chartType">
+    </canvas>
+  </div>
+</div>
+

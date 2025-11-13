@@ -1,0 +1,30 @@
+<div class="widget-operations-status">
+  <div class="widget-operations-status__header">
+    <h3 class="widget-operations-status__title">{{ widget.title || 'Status das Operações' }}</h3>
+  </div>
+  
+  <div class="widget-operations-status__content">
+    <div class="operation-item" *ngFor="let operation of widget.operations">
+      <div class="operation-header">
+        <h4 class="operation-name">{{ operation.name }}</h4>
+        <span [class]="'status-badge status-' + operation.status">
+          {{ operation.status === 'running' ? 'Em Execução' : operation.status === 'completed' ? 'Concluída' : operation.status === 'failed' ? 'Falhou' : 'Pendente' }}
+        </span>
+      </div>
+      
+      <div class="operation-progress" *ngIf="operation.progress !== undefined">
+        <div class="progress-bar">
+          <div class="progress-bar__fill" [style.width.%]="operation.progress" [class]="'progress-bar__fill--' + operation.status"></div>
+        </div>
+        <span class="progress-value">{{ operation.progress }}%</span>
+      </div>
+
+      <div class="operation-details" *ngIf="operation.startTime || operation.duration">
+        <span *ngIf="operation.startTime" class="operation-time">Início: {{ formatDate(operation.startTime) }}</span>
+        <span *ngIf="operation.endTime" class="operation-time">Fim: {{ formatDate(operation.endTime) }}</span>
+        <span *ngIf="operation.duration" class="operation-duration">Duração: {{ operation.duration }}</span>
+      </div>
+    </div>
+  </div>
+</div>
+

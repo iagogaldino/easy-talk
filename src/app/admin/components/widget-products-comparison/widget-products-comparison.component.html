@@ -1,0 +1,38 @@
+<div class="widget-products-comparison">
+  <div class="widget-products-comparison__header">
+    <h3 class="widget-products-comparison__title">{{ widget.title || 'Comparativo de Produtos' }}</h3>
+  </div>
+  
+  <div class="widget-products-comparison__content">
+    <div class="product-comparison-item" *ngFor="let item of widget.comparison">
+      <h4 class="product-name">{{ item.product }}</h4>
+      
+      <div class="comparison-grid">
+        <div class="comparison-section">
+          <span class="section-label">Vendas</span>
+          <div class="section-values">
+            <span class="section-value">{{ item.period1.sales }}</span>
+            <span class="section-arrow">→</span>
+            <span class="section-value">{{ item.period2.sales }}</span>
+            <span [class]="'section-change ' + getChangeClass(item.change.salesPercentage)">
+              {{ item.change.salesPercentage >= 0 ? '+' : '' }}{{ item.change.salesPercentage.toFixed(1) }}%
+            </span>
+          </div>
+        </div>
+        
+        <div class="comparison-section">
+          <span class="section-label">Receita</span>
+          <div class="section-values">
+            <span class="section-value">{{ formatCurrency(item.period1.revenue) }}</span>
+            <span class="section-arrow">→</span>
+            <span class="section-value">{{ formatCurrency(item.period2.revenue) }}</span>
+            <span [class]="'section-change ' + getChangeClass(item.change.revenuePercentage)">
+              {{ item.change.revenuePercentage >= 0 ? '+' : '' }}{{ item.change.revenuePercentage.toFixed(1) }}%
+            </span>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+

@@ -1,0 +1,36 @@
+<div class="widget-sales-table">
+  <div class="widget-sales-table__header">
+    <h3 class="widget-sales-table__title">{{ widget.title || 'Vendas Recentes' }}</h3>
+  </div>
+  <div class="widget-sales-table__content">
+    <table class="widget-sales-table__table">
+      <thead>
+        <tr>
+          <th>Data</th>
+          <th>Cliente</th>
+          <th>Produto</th>
+          <th>Qtd</th>
+          <th>Valor</th>
+          <th>Vendedor</th>
+          <th>Status</th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr *ngFor="let item of widget.data">
+          <td>{{ formatDate(item.date) }}</td>
+          <td>{{ item.client }}</td>
+          <td>{{ item.product }}</td>
+          <td>{{ item.quantity }}</td>
+          <td>{{ formatCurrency(item.value) }}</td>
+          <td>{{ item.seller }}</td>
+          <td>
+            <span [class]="'status-badge status-' + item.status">
+              {{ item.status === 'completed' ? 'Concluída' : item.status === 'pending' ? 'Pendente' : 'Cancelada' }}
+            </span>
+          </td>
+        </tr>
+      </tbody>
+    </table>
+  </div>
+</div>
+

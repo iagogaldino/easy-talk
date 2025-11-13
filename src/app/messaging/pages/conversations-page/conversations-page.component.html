@@ -1,6 +1,15 @@
 <div class="conversations-page" [class.conversations-page--profile-open]="isProfilePanelOpen" [class.conversations-page--assistant-open]="isAssistantPanelOpen">
   <nav class="conversations-page__nav">
     <div class="conversations-page__nav-top">
+      <button 
+        *ngIf="showBackToAdmin"
+        mat-icon-button 
+        class="conversations-page__nav-back-admin"
+        aria-label="Voltar para Admin"
+        (click)="navigateToAdmin()"
+      >
+        <mat-icon>admin_panel_settings</mat-icon>
+      </button>
       <button mat-icon-button class="conversations-page__nav-avatar" aria-label="Perfil" disabled>
         <mat-icon>account_circle</mat-icon>
       </button>

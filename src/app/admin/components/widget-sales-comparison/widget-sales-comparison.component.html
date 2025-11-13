@@ -1,0 +1,34 @@
+<div class="widget-sales-comparison">
+  <div class="widget-sales-comparison__header">
+    <h3 class="widget-sales-comparison__title">{{ widget.title || 'Comparativo de Vendas' }}</h3>
+  </div>
+  
+  <div class="widget-sales-comparison__summary">
+    <div class="period-card">
+      <span class="period-label">{{ widget.comparison.period1.label }}</span>
+      <span class="period-value">{{ formatCurrency(widget.comparison.period1.value) }}</span>
+    </div>
+    <div class="period-card">
+      <span class="period-label">{{ widget.comparison.period2.label }}</span>
+      <span class="period-value">{{ formatCurrency(widget.comparison.period2.value) }}</span>
+    </div>
+    <div class="change-card" [class]="getChangeClass()">
+      <span class="change-label">Variação</span>
+      <span class="change-value">
+        {{ widget.comparison.change.direction === 'up' ? '↑' : '↓' }}
+        {{ Math.abs(widget.comparison.change.percentage).toFixed(1) }}%
+      </span>
+      <span class="change-amount">{{ formatCurrency(Math.abs(widget.comparison.change.value)) }}</span>
+    </div>
+  </div>
+
+  <div class="widget-sales-comparison__chart">
+    <canvas baseChart
+      [type]="chartType"
+      [data]="chartData"
+      [options]="chartOptions"
+      [style.height.px]="300">
+    </canvas>
+  </div>
+</div>
+

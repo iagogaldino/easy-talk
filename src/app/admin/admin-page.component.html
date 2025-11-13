@@ -1,4 +1,39 @@
 <div class="admin-page">
+  <aside class="admin-page__sidebar">
+    <div class="admin-page__sidebar-content">
+      <div class="admin-page__sidebar-header">
+        <img 
+          *ngIf="logoLoaded"
+          [src]="logoPath" 
+          alt="Logo" 
+          class="admin-page__sidebar-logo"
+          (error)="onLogoError()"
+        />
+        <div *ngIf="!logoLoaded" class="admin-page__sidebar-logo-fallback">
+          <mat-icon>admin_panel_settings</mat-icon>
+        </div>
+      </div>
+      <div class="admin-page__sidebar-actions">
+        <button
+          mat-icon-button
+          class="admin-page__sidebar-button"
+          (click)="navigateToConversations()"
+          aria-label="Mensagens"
+        >
+          <mat-icon>message</mat-icon>
+        </button>
+        <button
+          mat-icon-button
+          class="admin-page__sidebar-logout"
+          (click)="handleLogout()"
+          aria-label="Sair"
+        >
+          <mat-icon>logout</mat-icon>
+        </button>
+      </div>
+    </div>
+  </aside>
+
   <div class="admin-page__left">
     <section class="admin-page__messages">
       <div *ngIf="messages.length === 0" class="admin-page__empty">
@@ -48,11 +83,42 @@
       <p>Nenhum widget criado ainda</p>
       <p class="admin-page__hint">Use comandos no chat para criar widgets</p>
     </div>
-    <div
-      *ngFor="let widget of widgets; trackBy: trackByWidgetId"
-      class="admin-page__widget-item"
-    >
-      <app-widget-renderer [widget]="widget"></app-widget-renderer>
+    
+    <div *ngIf="widgets.length > 0" class="admin-page__widgets-container">
+      <div class="admin-page__widgets-tabs">
+        <button
+          *ngFor="let widget of widgets; trackBy: trackByWidgetId"
+          class="admin-page__widget-tab"
+          [class.admin-page__widget-tab--active]="activeWidgetId === widget.id"
+          (click)="setActiveWidget(widget.id)"
+          [title]="getWidgetTitle(widget)"
+        >
+          <span class="admin-page__widget-tab-label">{{ getWidgetTitle(widget) }}</span>
+          <button
+            class="admin-page__widget-tab-close"
+            (click)="removeWidget(widget.id); $event.stopPropagation()"
+            aria-label="Fechar widget"
+            type="button"
+          >
+            <mat-icon>close</mat-icon>
+          </button>
+        </button>
+      </div>
+      
+      <div class="admin-page__widgets-content">
+        <div
+          *ngFor="let widget of widgets; trackBy: trackByWidgetId"
+          class="admin-page__widget-item"
+          [class.admin-page__widget-item--active]="activeWidgetId === widget.id"
+        >
+          <app-widget-renderer 
+            [widget]="widget" 
+            [onSellerClick]="onSellerClick.bind(this)"
+            [onWidgetRequest]="handleWidgetRequest.bind(this)"
+            (widgetClose)="removeWidget($event)">
+          </app-widget-renderer>
+        </div>
+      </div>
     </div>
   </aside>
 </div>

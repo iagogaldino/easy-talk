@@ -1,0 +1,37 @@
+<div class="widget-seller-profile">
+  <div class="widget-seller-profile__header">
+    <h3 *ngIf="widget.title" class="widget-seller-profile__title">{{ widget.title }}</h3>
+    <button mat-icon-button aria-label="Fechar" class="widget-seller-profile__close" (click)="onClose()">
+      <mat-icon>close</mat-icon>
+    </button>
+  </div>
+
+  <div class="widget-seller-profile__content">
+    <div class="widget-seller-profile__avatar">
+      <img *ngIf="widget.seller.avatar" [src]="widget.seller.avatar" [alt]="widget.seller.name" />
+      <div *ngIf="!widget.seller.avatar" class="widget-seller-profile__avatar-placeholder">
+        {{ widget.seller.name[0].toUpperCase() }}
+      </div>
+    </div>
+
+    <div class="widget-seller-profile__info">
+      <h3 class="widget-seller-profile__name">{{ widget.seller.name }}</h3>
+      
+      <div class="widget-seller-profile__detail">
+        <mat-icon>email</mat-icon>
+        <span>{{ widget.seller.email || 'Não informado' }}</span>
+      </div>
+
+      <div class="widget-seller-profile__detail">
+        <mat-icon>business</mat-icon>
+        <span>{{ widget.seller.department || 'Não informado' }}</span>
+      </div>
+
+      <div class="widget-seller-profile__metric">
+        <div class="widget-seller-profile__metric-value">{{ widget.seller.clientsCount }}</div>
+        <div class="widget-seller-profile__metric-label">Clientes Atendidos</div>
+      </div>
+    </div>
+  </div>
+</div>
+

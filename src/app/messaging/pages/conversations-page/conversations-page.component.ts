@@ -1,10 +1,11 @@
 import { CommonModule } from '@angular/common';
-import { ChangeDetectionStrategy, Component, OnInit } from '@angular/core';
+import { ChangeDetectionStrategy, ChangeDetectorRef, Component, OnInit } from '@angular/core';
+import { Router, NavigationEnd } from '@angular/router';
 import { MatButtonModule } from '@angular/material/button';
 import { MatDialog } from '@angular/material/dialog';
 import { MatIconModule } from '@angular/material/icon';
 import { MatProgressSpinnerModule } from '@angular/material/progress-spinner';
-import { Observable } from 'rxjs';
+import { Observable, filter } from 'rxjs';
 
 import { AssistantContextMessage, Conversation } from '../../models/conversation.model';
 import { ConversationsService } from '../../services/conversations.service';
@@ -45,6 +46,7 @@ export class ConversationsPageComponent implements OnInit {
   protected selectedConversation$!: Observable<Conversation | null>;
   protected isProfilePanelOpen = false;
   protected isAssistantPanelOpen = false;
+  protected showBackToAdmin = false;
   protected readonly assistantMessages: AssistantContextMessage[] = [
     {
       id: 'ai-1',
@@ -79,12 +81,30 @@ export class ConversationsPageComponent implements OnInit {
   constructor(
     private readonly conversationsService: ConversationsService,
     private readonly dialog: MatDialog,
+    private readonly router: Router,
+    private readonly cdr: ChangeDetectorRef,
   ) {}
 
   ngOnInit(): void {
     this.conversations$ = this.conversationsService.conversations$;
     this.selectedConversationId$ = this.conversationsService.selectedConversationId$;
     this.selectedConversation$ = this.conversationsService.selectedConversation$;
+    
+    // Verifica se veio da página admin através do sessionStorage
+    this.checkIfFromAdmin();
+    
+    // Também verifica quando a navegação termina
+    this.router.events
+      .pipe(filter(event => event instanceof NavigationEnd))
+      .subscribe(() => {
+        this.checkIfFromAdmin();
+      });
+  }
+
+  private checkIfFromAdmin(): void {
+    const fromAdmin = sessionStorage.getItem('fromAdmin');
+    this.showBackToAdmin = fromAdmin === 'true';
+    this.cdr.detectChanges();
   }
 
   protected handleConversationSelection(conversationId: string): void {
@@ -130,6 +150,12 @@ export class ConversationsPageComponent implements OnInit {
       panelClass: 'settings-dialog-panel',
       disableClose: false,
     });
+  }
+
+  protected navigateToAdmin(): void {
+    // Remove a flag ao voltar para admin
+    sessionStorage.removeItem('fromAdmin');
+    this.router.navigate(['/admin']);
   }
 
   private openDialerDialog(): void {

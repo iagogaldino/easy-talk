@@ -1,0 +1,45 @@
+<div class="widgets-menu">
+  <div class="widgets-menu__header">
+    <h3 class="widgets-menu__title">{{ widget.title || 'Painel de Controle' }}</h3>
+    <p class="widgets-menu__subtitle">Selecione uma visualização para monitorar seu negócio</p>
+  </div>
+  
+  <div class="widgets-menu__filter">
+    <div class="filter-input-wrapper">
+      <input
+        type="text"
+        class="filter-input"
+        [(ngModel)]="filterText"
+        placeholder="Buscar widgets..."
+        aria-label="Filtrar widgets"
+      />
+      <button
+        *ngIf="filterText"
+        class="filter-clear"
+        (click)="clearFilter()"
+        aria-label="Limpar filtro"
+        type="button"
+      >
+        ✕
+      </button>
+    </div>
+  </div>
+  
+  <div class="widgets-menu__content">
+    <div class="category-section" *ngFor="let category of filteredCategories">
+      <h4 class="category-title">{{ category.name }}</h4>
+      <div class="widgets-grid">
+        <button 
+          class="widget-button" 
+          *ngFor="let widgetItem of category.widgets"
+          (click)="onWidgetClick(widgetItem.command)"
+          [title]="widgetItem.description || widgetItem.name">
+          <span class="widget-icon" *ngIf="widgetItem.icon">{{ widgetItem.icon }}</span>
+          <span class="widget-name">{{ widgetItem.name }}</span>
+          <span class="widget-description" *ngIf="widgetItem.description">{{ widgetItem.description }}</span>
+        </button>
+      </div>
+    </div>
+  </div>
+</div>
+

@@ -1,0 +1,113 @@
+.widget-kpi-metrics {
+  padding: 1.5rem;
+  background-color: rgba(40, 40, 40, 0.6);
+  border-radius: 12px;
+  margin-bottom: 1rem;
+  backdrop-filter: blur(10px);
+}
+
+.widget-kpi-metrics__title {
+  margin: 0 0 1.5rem 0;
+  font-size: 1.25rem;
+  font-weight: 600;
+  color: var(--mat-sys-on-surface);
+}
+
+.widget-kpi-metrics__grid {
+  display: grid;
+  gap: 1rem;
+  grid-template-columns: repeat(2, 1fr);
+}
+
+.widget-kpi-metrics__card {
+  padding: 1.25rem;
+  background-color: rgba(255, 255, 255, 0.05);
+  border-radius: 8px;
+  border: 1px solid rgba(255, 255, 255, 0.1);
+  transition: all 0.2s ease;
+  
+  &:hover {
+    background-color: rgba(255, 255, 255, 0.08);
+    transform: translateY(-2px);
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.2);
+  }
+}
+
+.widget-kpi-metrics__card--primary {
+  border-left: 3px solid rgba(37, 99, 235, 0.8);
+}
+
+.widget-kpi-metrics__card--success {
+  border-left: 3px solid rgba(76, 175, 80, 0.8);
+}
+
+.widget-kpi-metrics__card--warning {
+  border-left: 3px solid rgba(255, 152, 0, 0.8);
+}
+
+.widget-kpi-metrics__card--danger {
+  border-left: 3px solid rgba(244, 67, 54, 0.8);
+}
+
+.widget-kpi-metrics__card--info {
+  border-left: 3px solid rgba(33, 150, 243, 0.8);
+}
+
+.widget-kpi-metrics__header {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  margin-bottom: 0.75rem;
+}
+
+.widget-kpi-metrics__icon {
+  color: rgba(255, 255, 255, 0.7);
+  font-size: 1.25rem;
+  width: 1.25rem;
+  height: 1.25rem;
+}
+
+.widget-kpi-metrics__label {
+  font-size: 0.875rem;
+  color: rgba(255, 255, 255, 0.7);
+  font-weight: 500;
+}
+
+.widget-kpi-metrics__value {
+  font-size: 2rem;
+  font-weight: 700;
+  color: var(--mat-sys-on-surface);
+  margin-bottom: 0.5rem;
+  line-height: 1.2;
+}
+
+.widget-kpi-metrics__trend {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.25rem;
+  font-size: 0.875rem;
+  font-weight: 500;
+  margin-top: 0.5rem;
+}
+
+.widget-kpi-metrics__trend--up {
+  color: #4caf50;
+}
+
+.widget-kpi-metrics__trend--down {
+  color: #f44336;
+}
+
+.widget-kpi-metrics__trend mat-icon {
+  font-size: 1rem;
+  width: 1rem;
+  height: 1rem;
+}
+
+// Responsividade
+@media (max-width: 768px) {
+  .widget-kpi-metrics__grid {
+    grid-template-columns: 1fr;
+  }
+}
+

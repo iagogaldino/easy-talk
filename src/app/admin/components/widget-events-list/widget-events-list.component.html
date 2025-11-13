@@ -1,0 +1,18 @@
+<div class="widget-events-list">
+  <div class="widget-events-list__header">
+    <h3 class="widget-events-list__title">{{ widget.title || 'Eventos Recentes' }}</h3>
+  </div>
+  <div class="widget-events-list__content">
+    <div class="event-item" *ngFor="let event of widget.data">
+      <div class="event-item__icon" [class]="'event-icon event-icon-' + event.type">
+        {{ getTypeIcon(event.type, event.icon) }}
+      </div>
+      <div class="event-item__content">
+        <h4 class="event-item__title">{{ event.title }}</h4>
+        <p *ngIf="event.description" class="event-item__description">{{ event.description }}</p>
+        <span class="event-item__timestamp">{{ formatDate(event.timestamp) }}</span>
+      </div>
+    </div>
+  </div>
+</div>
+

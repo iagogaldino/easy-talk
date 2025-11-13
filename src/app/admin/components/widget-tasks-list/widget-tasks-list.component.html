@@ -1,0 +1,25 @@
+<div class="widget-tasks-list">
+  <div class="widget-tasks-list__header">
+    <h3 class="widget-tasks-list__title">{{ widget.title || 'Tarefas' }}</h3>
+  </div>
+  <div class="widget-tasks-list__content">
+    <div class="task-item" *ngFor="let task of widget.data">
+      <div class="task-item__header">
+        <h4 class="task-item__title">{{ task.title }}</h4>
+        <span [class]="'priority-badge priority-' + task.priority">
+          {{ task.priority === 'urgent' ? 'Urgente' : task.priority === 'high' ? 'Alta' : task.priority === 'medium' ? 'Média' : 'Baixa' }}
+        </span>
+      </div>
+      <p *ngIf="task.description" class="task-item__description">{{ task.description }}</p>
+      <div class="task-item__meta">
+        <span [class]="'status-badge status-' + task.status">
+          {{ task.status === 'completed' ? 'Concluída' : task.status === 'in-progress' ? 'Em Andamento' : 'Pendente' }}
+        </span>
+        <span *ngIf="task.assignee" class="task-item__assignee">👤 {{ task.assignee }}</span>
+        <span *ngIf="task.dueDate" class="task-item__due-date">📅 {{ formatDate(task.dueDate) }}</span>
+        <span *ngIf="task.category" class="task-item__category">{{ task.category }}</span>
+      </div>
+    </div>
+  </div>
+</div>
+

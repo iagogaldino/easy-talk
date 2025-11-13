@@ -1,51 +1,55 @@
 import { Injectable } from '@angular/core';
 import { Widget } from '../models/widget.model';
-import { getTopSellers } from '../../mocks/admin/mock-sellers';
+import { WidgetRegistryService } from './widget-registry.service';
 
 @Injectable({
   providedIn: 'root',
 })
 export class WidgetInterpreterService {
+  constructor(
+    private widgetRegistry: WidgetRegistryService,
+  ) {}
+
   /**
    * Interpreta uma mensagem e tenta gerar um widget baseado em comandos naturais
    */
   interpretMessage(message: string): Widget | null {
     const lowerMessage = message.toLowerCase().trim();
 
-    // Comandos para criar widgets
+    // Comandos para criar widgets (mantido para compatibilidade)
     if (lowerMessage.startsWith('criar widget') || lowerMessage.startsWith('crie widget')) {
       return this.parseWidgetCommand(message);
     }
 
-    // Comandos diretos
+    // Usa o sistema de registro para interpretar comandos
+    const widget = this.widgetRegistry.interpretMessage(message);
+    if (widget) {
+      return widget;
+    }
+
+    // Fallback para comandos genéricos (mantido para compatibilidade)
     if (lowerMessage.includes('card') || lowerMessage.includes('cartão')) {
       return this.createCardWidget(message);
-    }
-
-    if (lowerMessage.includes('gráfico') || lowerMessage.includes('grafico') || lowerMessage.includes('chart')) {
-      return this.createChartWidget(message);
-    }
-
-    if (lowerMessage.includes('tabela') || lowerMessage.includes('table')) {
-      return this.createTableWidget(message);
-    }
-
-    if (lowerMessage.includes('métrica') || lowerMessage.includes('metrica') || lowerMessage.includes('metric')) {
-      return this.createMetricWidget(message);
-    }
-
-    if (lowerMessage.includes('lista') || lowerMessage.includes('list')) {
-      return this.createListWidget(message);
     }
 
     if (lowerMessage.includes('botão') || lowerMessage.includes('botao') || lowerMessage.includes('button')) {
       return this.createButtonWidget(message);
     }
 
-    // Comando para gráfico de vendedores
-    if (lowerMessage.includes('vendedor') || lowerMessage.includes('vendedores') || 
-        lowerMessage.includes('atendem') || lowerMessage.includes('clientes')) {
-      return this.createSellerChartWidget(message);
+    if (lowerMessage.includes('métrica') || lowerMessage.includes('metrica') || lowerMessage.includes('metric')) {
+      return this.createMetricWidget(message);
+    }
+
+    if (lowerMessage.includes('tabela') || lowerMessage.includes('table')) {
+      return this.createTableWidget(message);
+    }
+
+    if (lowerMessage.includes('lista') || lowerMessage.includes('list')) {
+      return this.createListWidget(message);
+    }
+
+    if (lowerMessage.includes('gráfico') || lowerMessage.includes('grafico') || lowerMessage.includes('chart')) {
+      return this.createChartWidget(message);
     }
 
     return null;
@@ -202,28 +206,15 @@ export class WidgetInterpreterService {
     };
   }
 
-  private createSellerChartWidget(_message: string): Widget {
-    // Usa dados mockados de vendedores - em produção viria de uma API
-    const sellers = getTopSellers(8).map(seller => ({
-      name: seller.name,
-      clientsCount: seller.clientsCount,
-      avatar: seller.avatar,
-    }));
-
-    return {
-      id: this.generateId(),
-      type: 'seller-chart',
-      title: 'Vendedores que Atendem Mais Clientes',
-      sellers,
-    };
-  }
-
   private extractColor(message: string): 'primary' | 'accent' | 'warn' | undefined {
     if (message.match(/primary|primário|primario/i)) return 'primary';
     if (message.match(/accent|acento/i)) return 'accent';
     if (message.match(/warn|aviso|alerta/i)) return 'warn';
     return undefined;
   }
+
+  // Métodos específicos de widgets foram movidos para WidgetRegistryService
+  // Mantidos apenas métodos genéricos (card, button, metric, table, list, chart)
 
   private generateId(): string {
     return `widget-${Date.now()}-${Math.random().toString(36).substr(2, 9)}`;

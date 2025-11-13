@@ -1,0 +1,37 @@
+<div class="widget-employees-table">
+  <div class="widget-employees-table__header">
+    <h3 class="widget-employees-table__title">{{ widget.title || 'Funcionários' }}</h3>
+  </div>
+  <div class="widget-employees-table__content">
+    <table class="widget-employees-table__table">
+      <thead>
+        <tr>
+          <th>Funcionário</th>
+          <th>Email</th>
+          <th>Departamento</th>
+          <th>Cargo</th>
+          <th>Clientes</th>
+          <th>Vendas</th>
+          <th>Total</th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr *ngFor="let item of widget.data">
+          <td>
+            <div class="employee-info">
+              <img *ngIf="item.avatar" [src]="item.avatar" [alt]="item.name" class="employee-avatar" />
+              <span>{{ item.name }}</span>
+            </div>
+          </td>
+          <td>{{ item.email }}</td>
+          <td>{{ item.department }}</td>
+          <td>{{ item.position }}</td>
+          <td>{{ item.clientsCount }}</td>
+          <td>{{ item.salesCount }}</td>
+          <td>{{ formatCurrency(item.totalSales) }}</td>
+        </tr>
+      </tbody>
+    </table>
+  </div>
+</div>
+

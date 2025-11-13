@@ -1,0 +1,53 @@
+<div class="widget-system-status">
+  <div class="widget-system-status__header">
+    <h3 class="widget-system-status__title">{{ widget.title || 'Status do Sistema' }}</h3>
+    <span [class]="'status-badge status-' + widget.status.overall">
+      {{ widget.status.overall === 'healthy' ? 'Saudável' : widget.status.overall === 'warning' ? 'Atenção' : 'Crítico' }}
+    </span>
+  </div>
+  
+  <div class="widget-system-status__metrics">
+    <div class="metric-item">
+      <span class="metric-label">CPU</span>
+      <div class="metric-bar">
+        <div class="metric-bar__fill" [style.width.%]="widget.status.metrics.cpuUsage" [class]="'metric-bar__fill--' + (widget.status.metrics.cpuUsage > 80 ? 'high' : widget.status.metrics.cpuUsage > 60 ? 'medium' : 'low')"></div>
+      </div>
+      <span class="metric-value">{{ widget.status.metrics.cpuUsage }}%</span>
+    </div>
+    <div class="metric-item">
+      <span class="metric-label">Memória</span>
+      <div class="metric-bar">
+        <div class="metric-bar__fill" [style.width.%]="widget.status.metrics.memoryUsage" [class]="'metric-bar__fill--' + (widget.status.metrics.memoryUsage > 80 ? 'high' : widget.status.metrics.memoryUsage > 60 ? 'medium' : 'low')"></div>
+      </div>
+      <span class="metric-value">{{ widget.status.metrics.memoryUsage }}%</span>
+    </div>
+    <div class="metric-item">
+      <span class="metric-label">Disco</span>
+      <div class="metric-bar">
+        <div class="metric-bar__fill" [style.width.%]="widget.status.metrics.diskUsage" [class]="'metric-bar__fill--' + (widget.status.metrics.diskUsage > 80 ? 'high' : widget.status.metrics.diskUsage > 60 ? 'medium' : 'low')"></div>
+      </div>
+      <span class="metric-value">{{ widget.status.metrics.diskUsage }}%</span>
+    </div>
+    <div class="metric-item">
+      <span class="metric-label">Usuários Ativos</span>
+      <span class="metric-value">{{ widget.status.metrics.activeUsers }}</span>
+    </div>
+  </div>
+
+  <div class="widget-system-status__services">
+    <h4 class="services-title">Serviços</h4>
+    <div class="service-item" *ngFor="let service of widget.status.services">
+      <div class="service-info">
+        <span class="service-name">{{ service.name }}</span>
+        <span [class]="'service-status service-status-' + service.status">
+          {{ service.status === 'online' ? '● Online' : service.status === 'offline' ? '● Offline' : '● Degradado' }}
+        </span>
+      </div>
+      <div class="service-details" *ngIf="service.uptime">
+        <span class="service-uptime">Uptime: {{ service.uptime }}%</span>
+        <span class="service-check" *ngIf="service.lastCheck">Última verificação: {{ formatDate(service.lastCheck) }}</span>
+      </div>
+    </div>
+  </div>
+</div>
+

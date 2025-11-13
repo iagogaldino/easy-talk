@@ -1,0 +1,45 @@
+<div class="widget-alerts-dashboard">
+  <div class="widget-alerts-dashboard__header">
+    <h3 class="widget-alerts-dashboard__title">{{ widget.title || 'Dashboard de Alertas' }}</h3>
+  </div>
+  
+  <div class="widget-alerts-dashboard__summary">
+    <div class="summary-card summary-total">
+      <span class="summary-label">Total</span>
+      <span class="summary-value">{{ widget.summary.total }}</span>
+    </div>
+    <div class="summary-card summary-critical">
+      <span class="summary-label">Críticos</span>
+      <span class="summary-value">{{ widget.summary.critical }}</span>
+    </div>
+    <div class="summary-card summary-warning">
+      <span class="summary-label">Avisos</span>
+      <span class="summary-value">{{ widget.summary.warning }}</span>
+    </div>
+    <div class="summary-card summary-info">
+      <span class="summary-label">Info</span>
+      <span class="summary-value">{{ widget.summary.info }}</span>
+    </div>
+    <div class="summary-card summary-resolved">
+      <span class="summary-label">Resolvidos</span>
+      <span class="summary-value">{{ widget.summary.resolved }}</span>
+    </div>
+  </div>
+
+  <div class="widget-alerts-dashboard__recent">
+    <h4 class="recent-title">Alertas Recentes</h4>
+    <div class="alert-item" *ngFor="let alert of widget.recentAlerts">
+      <div class="alert-icon" [class]="'alert-icon-' + alert.type">
+        {{ alert.type === 'critical' ? '⚠' : alert.type === 'warning' ? '⚠' : 'ℹ' }}
+      </div>
+      <div class="alert-content">
+        <div class="alert-header">
+          <h5 class="alert-title">{{ alert.title }}</h5>
+          <span *ngIf="alert.resolved" class="alert-resolved-badge">Resolvido</span>
+        </div>
+        <span class="alert-timestamp">{{ formatDate(alert.timestamp) }}</span>
+      </div>
+    </div>
+  </div>
+</div>
+

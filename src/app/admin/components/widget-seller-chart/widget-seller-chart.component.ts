@@ -1,5 +1,5 @@
 import { CommonModule } from '@angular/common';
-import { Component, Input, OnInit } from '@angular/core';
+import { Component, Input, OnInit, NgZone } from '@angular/core';
 import { BaseChartDirective } from 'ng2-charts';
 import {
   ChartConfiguration,
@@ -14,6 +14,7 @@ import {
 } from 'chart.js';
 import { SellerChartWidget } from '../../models/widget.model';
 import { Chart } from 'chart.js';
+import { Seller, MOCK_SELLERS } from '../../../mocks/admin/mock-sellers';
 
 // Registrar os componentes necessários do Chart.js
 Chart.register(CategoryScale, LinearScale, BarElement, BarController, Tooltip, Legend);
@@ -27,6 +28,7 @@ Chart.register(CategoryScale, LinearScale, BarElement, BarController, Tooltip, L
 })
 export class WidgetSellerChartComponent implements OnInit {
   @Input() widget!: SellerChartWidget;
+  @Input() onSellerClick?: (seller: Seller) => void;
 
   public barChartType: 'bar' = 'bar';
   public barChartData!: ChartData<'bar'>;
@@ -34,9 +36,32 @@ export class WidgetSellerChartComponent implements OnInit {
   public chartPlugins: Plugin<'bar'>[] = [];
   private loadedImages: Map<string, HTMLImageElement> = new Map();
 
+  constructor(private ngZone: NgZone) {}
+
   public barChartOptions: ChartConfiguration<'bar'>['options'] = {
     responsive: true,
     maintainAspectRatio: false,
+    onClick: (_event, elements) => {
+      if (elements.length > 0 && this.onSellerClick) {
+        const element = elements[0];
+        const index = element.index;
+        const sellerData = this.widget.sellers[index];
+        if (sellerData) {
+          const fullSeller = MOCK_SELLERS.find(s => s.name === sellerData.name) || {
+            name: sellerData.name,
+            clientsCount: sellerData.clientsCount,
+            avatar: sellerData.avatar,
+            email: sellerData.name.toLowerCase().replace(' ', '.') + '@empresa.com',
+            department: 'Vendas',
+          } as Seller;
+          
+          // Executa dentro da zona do Angular para garantir detecção de mudanças
+          this.ngZone.run(() => {
+            this.onSellerClick!(fullSeller);
+          });
+        }
+      }
+    },
     animations: {
       x: {
         from: 0,
@@ -207,6 +232,44 @@ export class WidgetSellerChartComponent implements OnInit {
               }
             }
           });
+        },
+      },
+      {
+        id: 'avatarClickPlugin',
+        afterEvent: (chart, args) => {
+          const event = args.event;
+          if (event.type === 'click' && event.x !== null && event.y !== null) {
+            const meta = chart.getDatasetMeta(0);
+            const yAxis = chart.scales['y'];
+            const imageSize = 36;
+            const clickX = event.x;
+            const clickY = event.y;
+
+            meta.data.forEach((bar: any, index: number) => {
+              const x = bar.x;
+              const y = yAxis.bottom + 30;
+              const distance = Math.sqrt(Math.pow(clickX - x, 2) + Math.pow(clickY - y, 2));
+              
+              // Verifica se o clique foi no avatar (raio de 20px)
+              if (distance <= imageSize / 2 + 5 && this.onSellerClick) {
+                const sellerData = this.widget.sellers[index];
+                if (sellerData) {
+                  const fullSeller = MOCK_SELLERS.find(s => s.name === sellerData.name) || {
+                    name: sellerData.name,
+                    clientsCount: sellerData.clientsCount,
+                    avatar: sellerData.avatar,
+                    email: sellerData.name.toLowerCase().replace(' ', '.') + '@empresa.com',
+                    department: 'Vendas',
+                  } as Seller;
+                  
+                  // Executa dentro da zona do Angular para garantir detecção de mudanças
+                  this.ngZone.run(() => {
+                    this.onSellerClick!(fullSeller);
+                  });
+                }
+              }
+            });
+          }
         },
       },
     ];

@@ -1,0 +1,42 @@
+<div class="widget-sellers-comparison">
+  <div class="widget-sellers-comparison__header">
+    <h3 class="widget-sellers-comparison__title">{{ widget.title || 'Comparativo de Vendedores' }}</h3>
+  </div>
+  
+  <div class="widget-sellers-comparison__content">
+    <div class="seller-comparison-item" *ngFor="let item of widget.comparison">
+      <div class="seller-header">
+        <div class="seller-info">
+          <img *ngIf="item.avatar" [src]="item.avatar" [alt]="item.seller" class="seller-avatar" />
+          <span class="seller-name">{{ item.seller }}</span>
+        </div>
+      </div>
+
+      <div class="comparison-metrics">
+        <div class="metric-row">
+          <span class="metric-label">Vendas</span>
+          <div class="metric-values">
+            <span class="metric-value">{{ item.period1.sales }}</span>
+            <span class="metric-arrow">→</span>
+            <span class="metric-value">{{ item.period2.sales }}</span>
+            <span [class]="'metric-change ' + getChangeClass(item.change.salesPercentage)">
+              {{ item.change.salesPercentage >= 0 ? '+' : '' }}{{ item.change.salesPercentage.toFixed(1) }}%
+            </span>
+          </div>
+        </div>
+        <div class="metric-row">
+          <span class="metric-label">Clientes</span>
+          <div class="metric-values">
+            <span class="metric-value">{{ item.period1.clients }}</span>
+            <span class="metric-arrow">→</span>
+            <span class="metric-value">{{ item.period2.clients }}</span>
+            <span [class]="'metric-change ' + getChangeClass(item.change.clientsPercentage)">
+              {{ item.change.clientsPercentage >= 0 ? '+' : '' }}{{ item.change.clientsPercentage.toFixed(1) }}%
+            </span>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+

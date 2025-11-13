@@ -1,0 +1,35 @@
+<div class="widget-kpi-metrics">
+  <h3 *ngIf="widget.title" class="widget-kpi-metrics__title">{{ widget.title }}</h3>
+  
+  <div class="widget-kpi-metrics__grid" [style.grid-template-columns]="getGridColumns()">
+    <div 
+      *ngFor="let metric of widget.metrics" 
+      class="widget-kpi-metrics__card"
+      [class.widget-kpi-metrics__card--primary]="metric.color === 'primary'"
+      [class.widget-kpi-metrics__card--success]="metric.color === 'success'"
+      [class.widget-kpi-metrics__card--warning]="metric.color === 'warning'"
+      [class.widget-kpi-metrics__card--danger]="metric.color === 'danger'"
+      [class.widget-kpi-metrics__card--info]="metric.color === 'info'"
+    >
+      <div class="widget-kpi-metrics__header">
+        <mat-icon *ngIf="metric.icon" class="widget-kpi-metrics__icon">{{ metric.icon }}</mat-icon>
+        <span class="widget-kpi-metrics__label">{{ metric.label }}</span>
+      </div>
+      
+      <div class="widget-kpi-metrics__value">
+        {{ formatValue(metric.value, metric.unit) }}
+      </div>
+      
+      <div 
+        *ngIf="metric.trend" 
+        class="widget-kpi-metrics__trend"
+        [class.widget-kpi-metrics__trend--up]="metric.trend.direction === 'up'"
+        [class.widget-kpi-metrics__trend--down]="metric.trend.direction === 'down'"
+      >
+        <mat-icon>{{ metric.trend.direction === 'up' ? 'trending_up' : 'trending_down' }}</mat-icon>
+        <span>{{ getTrendValue(metric.trend) }}%</span>
+      </div>
+    </div>
+  </div>
+</div>
+

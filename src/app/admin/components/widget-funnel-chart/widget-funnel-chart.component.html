@@ -1,0 +1,18 @@
+<div class="widget-funnel-chart">
+  <h3 *ngIf="widget.title" class="widget-funnel-chart__title">{{ widget.title }}</h3>
+  <div class="widget-funnel-chart__container">
+    <div 
+      *ngFor="let stage of widget.data; let i = index" 
+      class="widget-funnel-chart__stage"
+      [style.width]="getBarWidth(stage.percentage)"
+    >
+      <div class="widget-funnel-chart__stage-label">
+        <span class="widget-funnel-chart__stage-name">{{ stage.stage }}</span>
+        <span class="widget-funnel-chart__stage-value">{{ stage.value.toLocaleString('pt-BR') }}</span>
+        <span class="widget-funnel-chart__stage-percentage">{{ stage.percentage }}%</span>
+      </div>
+      <div class="widget-funnel-chart__stage-bar" [style.height.px]="60 + (100 - stage.percentage) * 0.5"></div>
+    </div>
+  </div>
+</div>
+

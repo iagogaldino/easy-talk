@@ -1,0 +1,95 @@
+.widget-sales-comparison {
+  background: rgba(30, 30, 30, 0.6);
+  border-radius: 12px;
+  padding: 1.5rem;
+  backdrop-filter: blur(10px);
+  border: 1px solid rgba(255, 255, 255, 0.1);
+
+  &__header {
+    margin-bottom: 1.5rem;
+  }
+
+  &__title {
+    font-size: 1.25rem;
+    font-weight: 600;
+    color: rgba(255, 255, 255, 0.9);
+    margin: 0;
+  }
+
+  &__summary {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 1rem;
+    margin-bottom: 1.5rem;
+  }
+
+  &__chart {
+    height: 300px;
+  }
+}
+
+.period-card {
+  background: rgba(40, 40, 40, 0.4);
+  border-radius: 8px;
+  padding: 1rem;
+  display: flex;
+  flex-direction: column;
+  gap: 0.5rem;
+}
+
+.period-label {
+  font-size: 0.75rem;
+  color: rgba(255, 255, 255, 0.7);
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
+}
+
+.period-value {
+  font-size: 1.25rem;
+  font-weight: 700;
+  color: rgba(255, 255, 255, 0.9);
+}
+
+.change-card {
+  background: rgba(40, 40, 40, 0.4);
+  border-radius: 8px;
+  padding: 1rem;
+  display: flex;
+  flex-direction: column;
+  gap: 0.5rem;
+  border-top: 3px solid;
+
+  &.change-up {
+    border-top-color: #4caf50;
+  }
+
+  &.change-down {
+    border-top-color: #f44336;
+  }
+}
+
+.change-label {
+  font-size: 0.75rem;
+  color: rgba(255, 255, 255, 0.7);
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
+}
+
+.change-value {
+  font-size: 1.5rem;
+  font-weight: 700;
+
+  .change-up & {
+    color: #4caf50;
+  }
+
+  .change-down & {
+    color: #f44336;
+  }
+}
+
+.change-amount {
+  font-size: 0.875rem;
+  color: rgba(255, 255, 255, 0.7);
+}
+
