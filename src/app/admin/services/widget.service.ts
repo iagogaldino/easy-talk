@@ -23,6 +23,10 @@ import {
   ProductsComparisonWidget,
   RegionsComparisonWidget,
   WidgetsMenuWidget,
+  DeliveriesWidget,
+  DocumentsWidget,
+  InactiveClientsWidget,
+  ServiceFunnelWidget,
 } from '../models/widget.model';
 import { MOCK_SELLERS, getTopSellers, Seller } from '../../mocks/admin/mock-sellers';
 import { getAllKPIs, getKPIsByCategory } from '../../mocks/admin/mock-kpis';
@@ -56,6 +60,18 @@ import {
   PRODUCTS_COMPARISON_DATA,
   REGIONS_COMPARISON_DATA,
 } from '../../mocks/admin/mock-comparison-data';
+import {
+  getDeliveriesByStatus,
+} from '../../mocks/admin/mock-deliveries-data';
+import {
+  getDocumentsByStatus,
+} from '../../mocks/admin/mock-documents-data';
+import {
+  getInactiveClientsByDays,
+} from '../../mocks/admin/mock-inactive-clients-data';
+import {
+  getServiceFunnelByPeriod,
+} from '../../mocks/admin/mock-service-funnel-data';
 
 @Injectable({
   providedIn: 'root',
@@ -95,6 +111,10 @@ export class WidgetService {
       'products-comparison',
       'regions-comparison',
       'widgets-menu',
+      'deliveries',
+      'documents',
+      'inactive-clients',
+      'service-funnel',
     ];
   }
 
@@ -578,6 +598,69 @@ export class WidgetService {
   }
 
   /**
+   * Cria um widget de entregas
+   */
+  createDeliveriesWidget(filter?: 'all' | 'implantado' | 'aprovado' | 'saiu-entrega' | 'entregue'): DeliveriesWidget {
+    const deliveries = getDeliveriesByStatus(filter);
+    
+    return {
+      id: this.generateId(),
+      type: 'deliveries',
+      title: 'Status de Entregas',
+      deliveries,
+      filter: filter || 'all',
+    };
+  }
+
+  /**
+   * Cria um widget de documentos (boletos, notas, etc)
+   */
+  createDocumentsWidget(filter?: 'all' | 'pending' | 'sent' | 'viewed'): DocumentsWidget {
+    const documents = getDocumentsByStatus(filter);
+    
+    return {
+      id: this.generateId(),
+      type: 'documents',
+      title: 'Documentos para Envio',
+      documents,
+      filter: filter || 'all',
+    };
+  }
+
+  /**
+   * Cria um widget de clientes inativos
+   */
+  createInactiveClientsWidget(daysThreshold: number = 30, autoMessageEnabled: boolean = true): InactiveClientsWidget {
+    const clients = getInactiveClientsByDays(daysThreshold);
+    
+    return {
+      id: this.generateId(),
+      type: 'inactive-clients',
+      title: `Clientes Inativos (${daysThreshold}+ dias)`,
+      clients,
+      daysThreshold,
+      autoMessageEnabled,
+    };
+  }
+
+  /**
+   * Cria um widget de funil de atendimento
+   */
+  createServiceFunnelWidget(period: 'day' | 'week' | 'month' | 'year' = 'month'): ServiceFunnelWidget {
+    const data = getServiceFunnelByPeriod(period);
+    
+    return {
+      id: this.generateId(),
+      type: 'service-funnel',
+      title: 'Funil de Atendimento',
+      stages: data.stages,
+      period,
+      totalLeads: data.totalLeads,
+      conversionRate: data.conversionRate,
+    };
+  }
+
+  /**
    * Cria um widget de menu de widgets disponíveis
    */
   createWidgetsMenuWidget(): WidgetsMenuWidget {
@@ -755,6 +838,39 @@ export class WidgetService {
               description: 'Compare vendas por região',
               icon: '🗺️',
               command: 'mostrar comparativo de regiões',
+            },
+          ],
+        },
+        {
+          name: 'Operacional',
+          widgets: [
+            {
+              id: 'deliveries',
+              name: 'Status de Entregas',
+              description: 'Acompanhe status de pedidos e entregas',
+              icon: '🚚',
+              command: 'mostrar entregas',
+            },
+            {
+              id: 'documents',
+              name: 'Documentos para Envio',
+              description: 'Boletos, notas fiscais e documentos',
+              icon: '📄',
+              command: 'mostrar documentos',
+            },
+            {
+              id: 'inactive-clients',
+              name: 'Clientes Inativos',
+              description: 'Clientes sem contato há X dias',
+              icon: '⏰',
+              command: 'mostrar clientes inativos',
+            },
+            {
+              id: 'service-funnel',
+              name: 'Funil de Atendimento',
+              description: 'Funil de leads e propostas',
+              icon: '🎯',
+              command: 'mostrar funil de atendimento',
             },
           ],
         },

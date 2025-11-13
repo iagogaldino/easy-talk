@@ -8,6 +8,7 @@ import { MatButtonModule } from '@angular/material/button';
 import { ChatMessage, Widget } from './models/widget.model';
 import { WidgetInterpreterService } from './services/widget-interpreter.service';
 import { WidgetService } from './services/widget.service';
+import { RecentWidgetsService } from './services/recent-widgets.service';
 import { WidgetRendererComponent } from './components/widget-renderer/widget-renderer.component';
 import { Assets } from '../core/constants/assets.enum';
 
@@ -43,6 +44,7 @@ export class AdminPageComponent {
     private readonly widgetService: WidgetService,
     private readonly cdr: ChangeDetectorRef,
     private readonly router: Router,
+    private readonly recentWidgetsService: RecentWidgetsService,
   ) {
     // Inicializa com o widget de menu de widgets
     this.initializeDefaultWidget();
@@ -82,6 +84,11 @@ export class AdminPageComponent {
       this.widgets.push(widget);
       // Define como aba ativa
       this.activeWidgetId = widget.id;
+      
+      // Adiciona aos widgets recentes
+      const command = this.getCommandForWidget(widget.type);
+      const icon = this.getIconForWidget(widget.type);
+      this.recentWidgetsService.addRecentWidget(widget, command, icon);
       
       // Adiciona mensagem da IA confirmando criação
       const aiMessage: ChatMessage = {
@@ -126,6 +133,12 @@ export class AdminPageComponent {
     if (sellerProfileWidget) {
       this.widgets.push(sellerProfileWidget);
       this.activeWidgetId = sellerProfileWidget.id;
+      
+      // Adiciona aos widgets recentes
+      const command = 'mostrar perfil do vendedor';
+      const icon = '👤';
+      this.recentWidgetsService.addRecentWidget(sellerProfileWidget, command, icon);
+      
       // Força a detecção de mudanças para atualizar a view imediatamente
       this.cdr.detectChanges();
     }
@@ -147,8 +160,40 @@ export class AdminPageComponent {
     if (widget) {
       this.widgets.push(widget);
       this.activeWidgetId = widget.id;
+      
+      // Adiciona aos widgets recentes
+      const icon = this.getIconForWidget(widget.type);
+      this.recentWidgetsService.addRecentWidget(widget, command, icon);
+      
       this.cdr.detectChanges();
     }
+  }
+
+  private getCommandForWidget(widgetType: string): string {
+    // Busca o comando no menu de widgets
+    const menuWidget = this.widgetService.createWidgetsMenuWidget();
+    for (const category of menuWidget.categories) {
+      for (const w of category.widgets) {
+        if (w.id === widgetType) {
+          return w.command;
+        }
+      }
+    }
+    // Fallback: retorna um comando genérico baseado no tipo
+    return `mostrar ${widgetType.replace(/-/g, ' ')}`;
+  }
+
+  private getIconForWidget(widgetType: string): string {
+    // Busca o ícone no menu de widgets
+    const menuWidget = this.widgetService.createWidgetsMenuWidget();
+    for (const category of menuWidget.categories) {
+      for (const w of category.widgets) {
+        if (w.id === widgetType) {
+          return w.icon || '📊';
+        }
+      }
+    }
+    return '📊';
   }
 
   protected setActiveWidget(widgetId: string): void {

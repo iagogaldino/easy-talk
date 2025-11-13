@@ -1,0 +1,85 @@
+<div class="widget-documents">
+  <div class="widget-documents__header">
+    <h3 class="widget-documents__title">{{ widget.title || 'Documentos para Envio' }}</h3>
+    <div class="widget-documents__stats">
+      <span class="stat-item">
+        <mat-icon>schedule</mat-icon>
+        <span>{{ getPendingCount() }}</span>
+      </span>
+      <span class="stat-item">
+        <mat-icon>send</mat-icon>
+        <span>{{ getSentCount() }}</span>
+      </span>
+      <span class="stat-item">
+        <mat-icon>visibility</mat-icon>
+        <span>{{ getViewedCount() }}</span>
+      </span>
+    </div>
+  </div>
+
+  <div class="widget-documents__content">
+    <div
+      *ngFor="let document of getFilteredDocuments()"
+      class="widget-documents__item"
+    >
+      <div class="widget-documents__item-header">
+        <div class="widget-documents__item-type">
+          <mat-icon>{{ getDocumentTypeIcon(document.documentType) }}</mat-icon>
+          <span>{{ getDocumentTypeLabel(document.documentType) }}</span>
+        </div>
+        <div class="widget-documents__item-status">
+          <mat-icon [class]="getStatusColor(document.status)">{{ getStatusIcon(document.status) }}</mat-icon>
+          <span>{{ getStatusLabel(document.status) }}</span>
+        </div>
+      </div>
+      
+      <div class="widget-documents__item-info">
+        <div class="info-row">
+          <span class="info-label">Pedido:</span>
+          <span>{{ document.orderNumber }}</span>
+        </div>
+        <div class="info-row">
+          <span class="info-label">Cliente:</span>
+          <span>{{ document.clientName }}</span>
+        </div>
+        <div class="info-row">
+          <span class="info-label">Telefone:</span>
+          <span>{{ document.clientPhone }}</span>
+        </div>
+        <div *ngIf="document.amount" class="info-row">
+          <span class="info-label">Valor:</span>
+          <span class="info-value">{{ formatCurrency(document.amount) }}</span>
+        </div>
+        <div *ngIf="document.dueDate" class="info-row">
+          <span class="info-label">Vencimento:</span>
+          <span>{{ formatDate(document.dueDate) }}</span>
+        </div>
+        <div *ngIf="document.sentDate" class="info-row">
+          <span class="info-label">Enviado em:</span>
+          <span>{{ formatDate(document.sentDate) }}</span>
+        </div>
+      </div>
+      
+      <div class="widget-documents__item-actions">
+        <button
+          *ngIf="document.status === 'pending'"
+          mat-button
+          color="primary"
+          (click)="sendDocument(document.id)"
+        >
+          <mat-icon>send</mat-icon>
+          Enviar via WhatsApp
+        </button>
+        <a
+          [href]="document.documentUrl"
+          target="_blank"
+          mat-button
+        >
+          <mat-icon>open_in_new</mat-icon>
+          Visualizar
+        </a>
+      </div>
+    </div>
+  </div>
+</div>
+

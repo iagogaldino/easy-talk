@@ -1,0 +1,73 @@
+<div class="widget-inactive-clients">
+  <div class="widget-inactive-clients__header">
+    <h3 class="widget-inactive-clients__title">{{ widget.title || 'Clientes Inativos' }}</h3>
+    <div class="widget-inactive-clients__controls">
+      <div class="auto-message-toggle">
+        <mat-slide-toggle
+          [checked]="widget.autoMessageEnabled"
+          (change)="toggleAutoMessage()"
+        >
+          Envio Automático
+        </mat-slide-toggle>
+      </div>
+      <div class="widget-inactive-clients__stats">
+        <span class="stat-item">
+          <mat-icon>people</mat-icon>
+          <span>{{ widget.clients.length }} clientes</span>
+        </span>
+        <span class="stat-item">
+          <mat-icon>attach_money</mat-icon>
+          <span>{{ formatCurrency(getTotalValue()) }}</span>
+        </span>
+      </div>
+    </div>
+  </div>
+
+  <div class="widget-inactive-clients__content">
+    <div
+      *ngFor="let client of widget.clients"
+      class="widget-inactive-clients__item"
+    >
+      <div class="widget-inactive-clients__item-header">
+        <div class="client-info">
+          <h4 class="client-name">{{ client.name }}</h4>
+          <span class="client-phone">{{ client.phone }}</span>
+        </div>
+        <mat-chip [class]="getDaysBadgeClass(client.daysInactive)">
+          {{ client.daysInactive }} dias
+        </mat-chip>
+      </div>
+      
+      <div class="widget-inactive-clients__item-details">
+        <div class="detail-row">
+          <mat-icon>schedule</mat-icon>
+          <span>Último contato: {{ formatDate(client.lastContactDate) }}</span>
+        </div>
+        <div *ngIf="client.lastOrderDate" class="detail-row">
+          <mat-icon>shopping_cart</mat-icon>
+          <span>Último pedido: {{ formatDate(client.lastOrderDate) }}</span>
+        </div>
+        <div class="detail-row">
+          <mat-icon>receipt</mat-icon>
+          <span>{{ client.totalOrders }} pedidos</span>
+        </div>
+        <div class="detail-row">
+          <mat-icon>attach_money</mat-icon>
+          <span>Total: {{ formatCurrency(client.totalValue) }}</span>
+        </div>
+      </div>
+      
+      <div class="widget-inactive-clients__item-actions">
+        <button
+          mat-button
+          color="primary"
+          (click)="sendMessage(client.id)"
+        >
+          <mat-icon>message</mat-icon>
+          Enviar Mensagem
+        </button>
+      </div>
+    </div>
+  </div>
+</div>
+

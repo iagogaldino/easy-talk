@@ -303,6 +303,65 @@ export class WidgetRegistryService {
       createWidget: (_message, service) => service.createRegionsComparisonWidget(),
     });
 
+    // Entregas
+    this.registerCommand({
+      keywords: ['entrega', 'entregas', 'pedido', 'pedidos', 'status'],
+      priority: 8,
+      requireAll: false,
+      createWidget: (message, service) => {
+        const lowerMessage = message.toLowerCase();
+        let filter: 'all' | 'implantado' | 'aprovado' | 'saiu-entrega' | 'entregue' = 'all';
+        if (lowerMessage.includes('implantado')) filter = 'implantado';
+        else if (lowerMessage.includes('aprovado')) filter = 'aprovado';
+        else if (lowerMessage.includes('entrega') && (lowerMessage.includes('saiu') || lowerMessage.includes('saindo'))) filter = 'saiu-entrega';
+        else if (lowerMessage.includes('entregue')) filter = 'entregue';
+        return service.createDeliveriesWidget(filter);
+      },
+    });
+
+    // Documentos
+    this.registerCommand({
+      keywords: ['documento', 'documentos', 'boleto', 'boletos', 'nota', 'notas', 'fiscal', 'promissória', 'promissoria'],
+      priority: 8,
+      requireAll: false,
+      createWidget: (message, service) => {
+        const lowerMessage = message.toLowerCase();
+        let filter: 'all' | 'pending' | 'sent' | 'viewed' = 'all';
+        if (lowerMessage.includes('pendente') || lowerMessage.includes('pendentes')) filter = 'pending';
+        else if (lowerMessage.includes('enviado') || lowerMessage.includes('enviados')) filter = 'sent';
+        else if (lowerMessage.includes('visualizado') || lowerMessage.includes('visualizados')) filter = 'viewed';
+        return service.createDocumentsWidget(filter);
+      },
+    });
+
+    // Clientes inativos
+    this.registerCommand({
+      keywords: ['inativo', 'inativos', 'cliente', 'clientes', 'nutrição', 'nutricao'],
+      priority: 8,
+      requireAll: false,
+      createWidget: (message, service) => {
+        const daysMatch = message.match(/(\d+)\s*dias?/i);
+        const daysThreshold = daysMatch ? parseInt(daysMatch[1], 10) : 30;
+        return service.createInactiveClientsWidget(daysThreshold);
+      },
+    });
+
+    // Funil de atendimento
+    this.registerCommand({
+      keywords: ['funil', 'atendimento', 'lead', 'leads', 'proposta', 'propostas'],
+      priority: 8,
+      requireAll: false,
+      createWidget: (message, service) => {
+        const lowerMessage = message.toLowerCase();
+        let period: 'day' | 'week' | 'month' | 'year' = 'month';
+        if (lowerMessage.includes('dia') || lowerMessage.includes('diário')) period = 'day';
+        else if (lowerMessage.includes('semana')) period = 'week';
+        else if (lowerMessage.includes('mês') || lowerMessage.includes('mes') || lowerMessage.includes('mensal')) period = 'month';
+        else if (lowerMessage.includes('ano') || lowerMessage.includes('anual')) period = 'year';
+        return service.createServiceFunnelWidget(period);
+      },
+    });
+
     // Menu de widgets
     this.registerCommand({
       keywords: ['menu', 'widget', 'widgets', 'disponível', 'disponivel', 'lista'],

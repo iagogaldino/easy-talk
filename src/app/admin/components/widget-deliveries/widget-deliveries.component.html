@@ -1,0 +1,91 @@
+<div class="widget-deliveries">
+  <div class="widget-deliveries__header">
+    <h3 class="widget-deliveries__title">{{ widget.title || 'Status de Entregas' }}</h3>
+    <div class="widget-deliveries__stats">
+      <span class="stat-item">
+        <mat-icon>inventory</mat-icon>
+        <span>{{ getImplantadoCount() }}</span>
+      </span>
+      <span class="stat-item">
+        <mat-icon>check_circle</mat-icon>
+        <span>{{ getAprovadoCount() }}</span>
+      </span>
+      <span class="stat-item">
+        <mat-icon>local_shipping</mat-icon>
+        <span>{{ getSaiuEntregaCount() }}</span>
+      </span>
+      <span class="stat-item">
+        <mat-icon>done_all</mat-icon>
+        <span>{{ getEntregueCount() }}</span>
+      </span>
+    </div>
+  </div>
+
+  <div class="widget-deliveries__filters">
+    <mat-button-toggle-group
+      [value]="selectedFilter"
+      (change)="setFilter($event.value)"
+      class="filter-group"
+    >
+      <mat-button-toggle value="all">
+        <mat-icon>list</mat-icon>
+        Todos ({{ getFilterCount('all') }})
+      </mat-button-toggle>
+      <mat-button-toggle value="implantado">
+        <mat-icon>inventory</mat-icon>
+        Implantado ({{ getFilterCount('implantado') }})
+      </mat-button-toggle>
+      <mat-button-toggle value="aprovado">
+        <mat-icon>check_circle</mat-icon>
+        Aprovado ({{ getFilterCount('aprovado') }})
+      </mat-button-toggle>
+      <mat-button-toggle value="saiu-entrega">
+        <mat-icon>local_shipping</mat-icon>
+        Em Entrega ({{ getFilterCount('saiu-entrega') }})
+      </mat-button-toggle>
+      <mat-button-toggle value="entregue">
+        <mat-icon>done_all</mat-icon>
+        Entregue ({{ getFilterCount('entregue') }})
+      </mat-button-toggle>
+    </mat-button-toggle-group>
+  </div>
+
+  <div class="widget-deliveries__content">
+    <div
+      *ngFor="let delivery of getFilteredDeliveries()"
+      class="widget-deliveries__item"
+    >
+      <div class="widget-deliveries__item-header">
+        <div class="widget-deliveries__item-status">
+          <mat-icon [class]="getStatusColor(delivery.status)">{{ getStatusIcon(delivery.status) }}</mat-icon>
+          <span class="status-label">{{ getStatusLabel(delivery.status) }}</span>
+        </div>
+        <span class="widget-deliveries__item-order">{{ delivery.orderNumber }}</span>
+      </div>
+      
+      <div class="widget-deliveries__item-info">
+        <div class="info-row">
+          <mat-icon>person</mat-icon>
+          <span>{{ delivery.clientName }}</span>
+        </div>
+        <div class="info-row">
+          <mat-icon>phone</mat-icon>
+          <span>{{ delivery.clientPhone }}</span>
+        </div>
+        <div class="info-row">
+          <mat-icon>location_on</mat-icon>
+          <span>{{ delivery.address }}</span>
+        </div>
+        <div class="info-row">
+          <mat-icon>schedule</mat-icon>
+          <span>Status em: {{ formatDate(delivery.statusDate) }}</span>
+        </div>
+        <div *ngIf="delivery.estimatedDelivery" class="info-row">
+          <mat-icon>event</mat-icon>
+          <span>Previsão: {{ formatDate(delivery.estimatedDelivery) }}</span>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+

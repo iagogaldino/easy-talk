@@ -24,6 +24,47 @@
       </button>
     </div>
   </div>
+
+  <!-- Widgets Recentes -->
+  <div *ngIf="recentWidgets.length > 0" class="widgets-menu__recent">
+    <h3 class="widgets-menu__section-title">
+      <mat-icon>history</mat-icon>
+      Acessados Recentemente
+      <span class="widgets-menu__recent-count">({{ recentWidgets.length }})</span>
+    </h3>
+    <div class="widgets-menu__recent-list">
+      <button
+        *ngFor="let recentWidget of displayedRecentWidgets"
+        class="widgets-menu__recent-item"
+        (click)="openRecentWidget(recentWidget)"
+      >
+        <div class="widgets-menu__recent-item-content">
+          <span class="widgets-menu__recent-icon">{{ recentWidget.icon || '📊' }}</span>
+          <div class="widgets-menu__recent-info">
+            <span class="widgets-menu__recent-title">{{ recentWidget.title }}</span>
+            <span class="widgets-menu__recent-time">{{ formatRecentTime(recentWidget.accessedAt) }}</span>
+          </div>
+        </div>
+        <button
+          mat-icon-button
+          class="widgets-menu__recent-remove"
+          (click)="removeRecentWidget(recentWidget.widgetId, $event)"
+          type="button"
+        >
+          <mat-icon>close</mat-icon>
+        </button>
+      </button>
+    </div>
+    <button
+      *ngIf="hasMoreRecentWidgets"
+      class="widgets-menu__show-more"
+      (click)="showMoreRecentWidgets()"
+      type="button"
+    >
+      <mat-icon>expand_more</mat-icon>
+      Mostrar mais ({{ recentWidgets.length - displayedRecentCount }} restantes)
+    </button>
+  </div>
   
   <div class="widgets-menu__content">
     <div class="category-section" *ngFor="let category of filteredCategories">

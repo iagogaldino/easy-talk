@@ -1,4 +1,4 @@
-export type WidgetType = 'card' | 'chart' | 'table' | 'button' | 'input' | 'text' | 'list' | 'metric' | 'seller-chart' | 'seller-profile' | 'kpi-metrics' | 'sales-chart' | 'product-chart' | 'region-chart' | 'funnel-chart' | 'segment-chart' | 'sales-table' | 'products-table' | 'clients-table' | 'employees-table' | 'tasks-list' | 'alerts-list' | 'events-list' | 'system-status' | 'operations-status' | 'alerts-dashboard' | 'sales-comparison' | 'sellers-comparison' | 'products-comparison' | 'regions-comparison' | 'widgets-menu';
+export type WidgetType = 'card' | 'chart' | 'table' | 'button' | 'input' | 'text' | 'list' | 'metric' | 'seller-chart' | 'seller-profile' | 'kpi-metrics' | 'sales-chart' | 'product-chart' | 'region-chart' | 'funnel-chart' | 'segment-chart' | 'sales-table' | 'products-table' | 'clients-table' | 'employees-table' | 'tasks-list' | 'alerts-list' | 'events-list' | 'system-status' | 'operations-status' | 'alerts-dashboard' | 'sales-comparison' | 'sellers-comparison' | 'products-comparison' | 'regions-comparison' | 'widgets-menu' | 'deliveries' | 'documents' | 'inactive-clients' | 'service-funnel';
 
 export interface BaseWidget {
   id: string;
@@ -402,6 +402,76 @@ export interface WidgetsMenuWidget extends BaseWidget {
   }>;
 }
 
+export interface DeliveryStatus {
+  id: string;
+  orderNumber: string;
+  clientName: string;
+  clientPhone: string;
+  status: 'implantado' | 'aprovado' | 'saiu-entrega' | 'entregue';
+  statusDate: Date;
+  estimatedDelivery?: Date;
+  address: string;
+}
+
+export interface DeliveriesWidget extends BaseWidget {
+  type: 'deliveries';
+  deliveries: DeliveryStatus[];
+  filter?: 'all' | 'implantado' | 'aprovado' | 'saiu-entrega' | 'entregue';
+}
+
+export interface Document {
+  id: string;
+  orderNumber: string;
+  clientName: string;
+  clientPhone: string;
+  documentType: 'boleto' | 'nota-promissoria' | 'nota-fiscal' | 'pedido';
+  documentUrl: string;
+  sentDate?: Date;
+  status: 'pending' | 'sent' | 'viewed';
+  amount?: number;
+  dueDate?: Date;
+}
+
+export interface DocumentsWidget extends BaseWidget {
+  type: 'documents';
+  documents: Document[];
+  filter?: 'all' | 'pending' | 'sent' | 'viewed';
+}
+
+export interface InactiveClient {
+  id: string;
+  name: string;
+  phone: string;
+  lastContactDate: Date;
+  daysInactive: number;
+  lastOrderDate?: Date;
+  totalOrders: number;
+  totalValue: number;
+}
+
+export interface InactiveClientsWidget extends BaseWidget {
+  type: 'inactive-clients';
+  clients: InactiveClient[];
+  daysThreshold: number;
+  autoMessageEnabled: boolean;
+}
+
+export interface ServiceFunnelStage {
+  stage: 'entrada-lead' | 'lead-contato' | 'proposta-fechada' | 'proposta-perdida';
+  label: string;
+  count: number;
+  percentage: number;
+  value?: number;
+}
+
+export interface ServiceFunnelWidget extends BaseWidget {
+  type: 'service-funnel';
+  stages: ServiceFunnelStage[];
+  period: 'day' | 'week' | 'month' | 'year';
+  totalLeads: number;
+  conversionRate: number;
+}
+
 export type Widget = 
   | CardWidget 
   | ChartWidget 
@@ -433,7 +503,11 @@ export type Widget =
   | SellersComparisonWidget
   | ProductsComparisonWidget
   | RegionsComparisonWidget
-  | WidgetsMenuWidget;
+  | WidgetsMenuWidget
+  | DeliveriesWidget
+  | DocumentsWidget
+  | InactiveClientsWidget
+  | ServiceFunnelWidget;
 
 export interface ChatMessage {
   id: string;

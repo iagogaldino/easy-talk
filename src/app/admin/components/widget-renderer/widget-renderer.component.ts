@@ -31,6 +31,10 @@ import { WidgetSellersComparisonComponent } from '../widget-sellers-comparison/w
 import { WidgetProductsComparisonComponent } from '../widget-products-comparison/widget-products-comparison.component';
 import { WidgetRegionsComparisonComponent } from '../widget-regions-comparison/widget-regions-comparison.component';
 import { WidgetsMenuComponent } from '../widgets-menu/widgets-menu.component';
+import { WidgetDeliveriesComponent } from '../widget-deliveries/widget-deliveries.component';
+import { WidgetDocumentsComponent } from '../widget-documents/widget-documents.component';
+import { WidgetInactiveClientsComponent } from '../widget-inactive-clients/widget-inactive-clients.component';
+import { WidgetServiceFunnelComponent } from '../widget-service-funnel/widget-service-funnel.component';
 
 @Component({
   selector: 'app-widget-renderer',
@@ -66,6 +70,10 @@ import { WidgetsMenuComponent } from '../widgets-menu/widgets-menu.component';
     WidgetProductsComparisonComponent,
     WidgetRegionsComparisonComponent,
     WidgetsMenuComponent,
+    WidgetDeliveriesComponent,
+    WidgetDocumentsComponent,
+    WidgetInactiveClientsComponent,
+    WidgetServiceFunnelComponent,
   ],
   template: `
     <ng-container [ngSwitch]="widget.type">
@@ -98,6 +106,10 @@ import { WidgetsMenuComponent } from '../widgets-menu/widgets-menu.component';
       <app-widget-products-comparison *ngSwitchCase="'products-comparison'" [widget]="$any(widget)"></app-widget-products-comparison>
       <app-widget-regions-comparison *ngSwitchCase="'regions-comparison'" [widget]="$any(widget)"></app-widget-regions-comparison>
       <app-widgets-menu *ngSwitchCase="'widgets-menu'" [widget]="$any(widget)" (widgetRequest)="handleWidgetRequest($event)"></app-widgets-menu>
+      <app-widget-deliveries *ngSwitchCase="'deliveries'" [widget]="$any(widget)"></app-widget-deliveries>
+      <app-widget-documents *ngSwitchCase="'documents'" [widget]="$any(widget)"></app-widget-documents>
+      <app-widget-inactive-clients *ngSwitchCase="'inactive-clients'" [widget]="$any(widget)"></app-widget-inactive-clients>
+      <app-widget-service-funnel *ngSwitchCase="'service-funnel'" [widget]="$any(widget)"></app-widget-service-funnel>
     </ng-container>
   `,
 })
