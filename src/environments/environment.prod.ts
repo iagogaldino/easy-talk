@@ -43,5 +43,13 @@ export const environment = {
   requestTimeout: 30000, // 30 segundos
   connectionRetryAttempts: 3,
   connectionRetryDelay: 1000, // 1 segundo
+  
+  // OpenAI Configuration
+  // Nota: As credenciais da OpenAI agora são gerenciadas pelo backend
+  // Este objeto é mantido para compatibilidade, mas não é mais usado
+  openai: {
+    apiKey: '',
+    assistantId: '',
+  },
 };
 

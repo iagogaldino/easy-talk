@@ -27,5 +27,9 @@ export interface Environment {
   requestTimeout: number;
   connectionRetryAttempts: number;
   connectionRetryDelay: number;
+  openai?: {
+    apiKey: string;
+    assistantId: string;
+  };
 }
 

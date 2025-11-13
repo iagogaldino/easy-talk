@@ -34,8 +34,8 @@
     </div>
   </aside>
 
-  <div class="admin-page__left">
-    <section class="admin-page__messages">
+  <div class="admin-page__left" [style.width.%]="chatColumnWidth">
+    <section class="admin-page__messages" #messagesContainer>
       <div *ngIf="messages.length === 0" class="admin-page__empty">
         <mat-icon>chat</mat-icon>
         <p>Nenhuma mensagem ainda</p>
@@ -47,7 +47,17 @@
         [class.admin-page__message--user]="msg.isUser"
         [class.admin-page__message--ai]="!msg.isUser"
       >
-        <div class="admin-page__message-content">{{ msg.content }}</div>
+        <div 
+          class="admin-page__message-content"
+          [innerHTML]="msg.isUser ? msg.content : (msg.content | markdown)"
+        ></div>
+      </div>
+      
+      <div *ngIf="isProcessingAI" class="admin-page__message admin-page__message--ai">
+        <div class="admin-page__message-content admin-page__message-processing">
+          <mat-spinner diameter="16"></mat-spinner>
+          <span>Processando...</span>
+        </div>
       </div>
     </section>
 
@@ -63,21 +73,39 @@
           (keydown)="handleKeydown($event)"
         ></textarea>
 
-        <button
-          mat-mini-fab
-          color="primary"
-          class="admin-page__composer-send"
-          (click)="hasMessage ? sendMessage() : null"
-          [disabled]="!hasMessage"
-          aria-label="Enviar mensagem"
-        >
-          <mat-icon>send</mat-icon>
-        </button>
+        <div class="admin-page__composer-actions">
+          <app-voice-control
+            (transcription)="handleVoiceTranscription($event)"
+            (error)="handleVoiceError($event)"
+            [enabled]="!isProcessingAI"
+          ></app-voice-control>
+          
+          <button
+            mat-mini-fab
+            color="primary"
+            class="admin-page__composer-send"
+            (click)="hasMessage ? sendMessage() : null"
+            [disabled]="!hasMessage || isProcessingAI"
+            aria-label="Enviar mensagem"
+          >
+            <mat-icon *ngIf="!isProcessingAI">send</mat-icon>
+            <mat-spinner *ngIf="isProcessingAI" diameter="20"></mat-spinner>
+          </button>
+        </div>
       </div>
     </footer>
   </div>
 
-  <aside class="admin-page__widgets">
+  <div 
+    class="admin-page__resizer"
+    (mousedown)="onResizeStart($event)"
+    [class.admin-page__resizer--active]="isResizing"
+    title="Arraste para redimensionar"
+  >
+    <div class="admin-page__resizer-handle"></div>
+  </div>
+
+  <aside class="admin-page__widgets" [style.width.%]="100 - chatColumnWidth - 0.5">
     <div *ngIf="widgets.length === 0" class="admin-page__widgets-empty">
       <mat-icon>widgets</mat-icon>
       <p>Nenhum widget criado ainda</p>

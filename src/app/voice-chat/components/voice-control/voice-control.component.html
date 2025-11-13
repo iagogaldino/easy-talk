@@ -1,0 +1,20 @@
+<button
+  mat-mini-fab
+  [color]="getButtonColor()"
+  [disabled]="!enabled || !voiceState.isSupported"
+  (click)="toggleListening()"
+  [matTooltip]="getTooltipText()"
+  class="voice-control__button"
+  [class.voice-control__button--listening]="voiceState.isListening"
+  [class.voice-control__button--speaking]="voiceState.isSpeaking"
+  aria-label="Ativar/desativar voz"
+>
+  <mat-icon *ngIf="!voiceState.isListening && !voiceState.isSpeaking">{{ getButtonIcon() }}</mat-icon>
+  <mat-spinner
+    *ngIf="voiceState.isListening"
+    diameter="20"
+    class="voice-control__spinner"
+  ></mat-spinner>
+  <mat-icon *ngIf="voiceState.isSpeaking">{{ getButtonIcon() }}</mat-icon>
+</button>
+

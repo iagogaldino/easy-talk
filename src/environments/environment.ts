@@ -10,6 +10,9 @@ export const environment = {
   apiUrl: 'http://localhost:3000/api',
   wsUrl: 'ws://localhost:3000',
   
+  // Backend URL (usado para chat com IA)
+  backendUrl: 'http://localhost:3000',
+  
   // Application Settings
   appName: 'EasyTalk',
   appVersion: '1.0.0',
@@ -44,5 +47,11 @@ export const environment = {
   requestTimeout: 30000, // 30 segundos
   connectionRetryAttempts: 3,
   connectionRetryDelay: 1000, // 1 segundo
+  
+  // OpenAI Configuration
+  openai: {
+    apiKey: '', // Configure sua API Key aqui ou via variável de ambiente
+    assistantId: '', // Configure o ID do seu Assistant aqui
+  },
 };
 
