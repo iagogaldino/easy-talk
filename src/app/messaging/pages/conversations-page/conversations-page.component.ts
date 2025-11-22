@@ -83,7 +83,6 @@ export class ConversationsPageComponent implements OnInit {
     { icon: 'forum', label: 'Conversas', active: true },
     { icon: 'smart_toy', label: 'Assistente IA', action: 'assistant' },
     { icon: 'call', label: 'Chamadas', action: 'dialer' },
-    { icon: 'delete', label: 'Arquivados' },
   ];
 
   constructor(

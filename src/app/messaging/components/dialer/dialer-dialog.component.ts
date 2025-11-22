@@ -83,8 +83,8 @@ import { FormsModule } from '@angular/forms';
     `
       .dialer-dialog {
         display: grid;
-        gap: 1.25rem;
-        padding: 1.5rem;
+        gap: 1.5rem;
+        padding: 2rem;
         min-width: 380px;
         max-width: 420px;
         width: 100%;
@@ -92,6 +92,7 @@ import { FormsModule } from '@angular/forms';
         overflow-y: auto;
         overflow-x: hidden;
         box-sizing: border-box;
+        background: transparent;
       }
 
       .dialer-dialog__header {
@@ -132,6 +133,32 @@ import { FormsModule } from '@angular/forms';
         width: 100%;
         max-width: 100%;
         box-sizing: border-box;
+      }
+
+      .dialer-dialog__input-field .mat-mdc-form-field-flex {
+        background-color: rgba(40, 40, 40, 0.7);
+        backdrop-filter: blur(16px);
+        -webkit-backdrop-filter: blur(16px);
+        border-radius: 16px;
+        border: 1px solid rgba(255, 255, 255, 0.1);
+        box-shadow: 
+          0 4px 16px rgba(0, 0, 0, 0.3),
+          0 2px 8px rgba(0, 0, 0, 0.2),
+          inset 0 1px 0 rgba(255, 255, 255, 0.05);
+        transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+      }
+
+      .dialer-dialog__input-field .mat-mdc-form-field-flex:focus-within {
+        background-color: rgba(50, 50, 50, 0.8);
+        border: 1px solid rgba(96, 165, 250, 0.3);
+        box-shadow: 
+          0 6px 20px rgba(0, 0, 0, 0.4),
+          0 4px 12px rgba(37, 99, 235, 0.2),
+          inset 0 1px 0 rgba(255, 255, 255, 0.08);
+      }
+
+      .dialer-dialog__input-field .mdc-notched-outline {
+        display: none !important;
       }
 
       .dialer-dialog__input-field .mat-mdc-form-field-subscript-wrapper {
@@ -186,27 +213,45 @@ import { FormsModule } from '@angular/forms';
 
       .dialer-dialog__key {
         aspect-ratio: 1;
-        min-height: 56px;
+        min-height: 64px;
         display: grid;
         grid-template-rows: 1fr auto;
         align-items: center;
         justify-items: center;
         padding: 0.75rem;
-        border-radius: 12px;
-        background: var(--mat-sys-surface-container-highest);
+        border-radius: 16px;
+        background-color: rgba(40, 40, 40, 0.6);
+        backdrop-filter: blur(12px);
+        -webkit-backdrop-filter: blur(12px);
+        border: 1px solid rgba(255, 255, 255, 0.08);
+        box-shadow: 
+          0 4px 16px rgba(0, 0, 0, 0.3),
+          0 2px 8px rgba(0, 0, 0, 0.2),
+          inset 0 1px 0 rgba(255, 255, 255, 0.05);
         color: var(--mat-sys-on-surface);
-        transition: all 0.2s ease;
+        transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
       }
 
       .dialer-dialog__key:hover {
-        background: var(--mat-sys-surface-container-high);
-        transform: scale(1.05);
+        background-color: rgba(50, 50, 50, 0.7);
+        transform: translateY(-2px) scale(1.02);
+        box-shadow: 
+          0 6px 20px rgba(0, 0, 0, 0.4),
+          0 4px 12px rgba(0, 0, 0, 0.3),
+          inset 0 1px 0 rgba(255, 255, 255, 0.08);
       }
 
       .dialer-dialog__key:active {
-        transform: scale(0.95);
-        background: var(--mat-sys-primary-container);
-        color: var(--mat-sys-on-primary-container);
+        transform: translateY(0) scale(0.98);
+        background: linear-gradient(
+          135deg,
+          rgba(37, 99, 235, 0.3) 0%,
+          rgba(59, 130, 246, 0.25) 100%
+        );
+        color: rgba(96, 165, 250, 1);
+        box-shadow: 
+          0 2px 8px rgba(37, 99, 235, 0.3),
+          inset 0 1px 0 rgba(255, 255, 255, 0.1);
       }
 
       .dialer-dialog__key-number {
@@ -233,9 +278,28 @@ import { FormsModule } from '@angular/forms';
       }
 
       .dialer-dialog__action-icon {
-        width: 40px;
-        height: 40px;
+        width: 48px;
+        height: 48px;
+        border-radius: 12px;
         color: var(--mat-sys-on-surface-variant);
+        background-color: rgba(40, 40, 40, 0.6);
+        backdrop-filter: blur(12px);
+        -webkit-backdrop-filter: blur(12px);
+        border: 1px solid rgba(255, 255, 255, 0.08);
+        box-shadow: 
+          0 4px 16px rgba(0, 0, 0, 0.3),
+          0 2px 8px rgba(0, 0, 0, 0.2),
+          inset 0 1px 0 rgba(255, 255, 255, 0.05);
+        transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+      }
+
+      .dialer-dialog__action-icon:hover:not(:disabled) {
+        background-color: rgba(50, 50, 50, 0.7);
+        transform: translateY(-2px);
+        box-shadow: 
+          0 6px 20px rgba(0, 0, 0, 0.4),
+          0 4px 12px rgba(0, 0, 0, 0.3),
+          inset 0 1px 0 rgba(255, 255, 255, 0.08);
       }
 
       .dialer-dialog__action-icon:disabled {
@@ -251,19 +315,33 @@ import { FormsModule } from '@angular/forms';
         border-radius: 12px;
         font-weight: 600;
         font-size: 0.95rem;
-        min-height: 44px;
+        min-height: 48px;
         min-width: 0;
         max-width: 100%;
         box-sizing: border-box;
+        border: none;
+        transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
       }
 
       .dialer-dialog__action-btn--delete {
-        background: var(--mat-sys-surface-container-highest);
+        background-color: rgba(40, 40, 40, 0.6);
+        backdrop-filter: blur(12px);
+        -webkit-backdrop-filter: blur(12px);
+        border: 1px solid rgba(255, 255, 255, 0.08);
+        box-shadow: 
+          0 4px 16px rgba(0, 0, 0, 0.3),
+          0 2px 8px rgba(0, 0, 0, 0.2),
+          inset 0 1px 0 rgba(255, 255, 255, 0.05);
         color: var(--mat-sys-on-surface);
       }
 
       .dialer-dialog__action-btn--delete:hover:not(:disabled) {
-        background: var(--mat-sys-surface-container-high);
+        background-color: rgba(50, 50, 50, 0.7);
+        transform: translateY(-2px);
+        box-shadow: 
+          0 6px 20px rgba(0, 0, 0, 0.4),
+          0 4px 12px rgba(0, 0, 0, 0.3),
+          inset 0 1px 0 rgba(255, 255, 255, 0.08);
       }
 
       .dialer-dialog__action-btn--delete:disabled {
@@ -271,14 +349,32 @@ import { FormsModule } from '@angular/forms';
       }
 
       .dialer-dialog__action-btn--call {
-        background: linear-gradient(135deg, var(--mat-sys-primary), var(--mat-sys-tertiary));
-        color: var(--mat-sys-on-primary);
+        background: linear-gradient(
+          135deg,
+          rgba(37, 99, 235, 0.9) 0%,
+          rgba(59, 130, 246, 0.9) 100%
+        );
+        backdrop-filter: blur(12px);
+        -webkit-backdrop-filter: blur(12px);
+        border: 1px solid rgba(96, 165, 250, 0.3);
+        box-shadow: 
+          0 6px 20px rgba(37, 99, 235, 0.4),
+          0 4px 12px rgba(37, 99, 235, 0.3),
+          inset 0 1px 0 rgba(255, 255, 255, 0.1);
+        color: #ffffff;
       }
 
       .dialer-dialog__action-btn--call:hover:not(:disabled) {
-        opacity: 0.9;
-        transform: translateY(-1px);
-        box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
+        background: linear-gradient(
+          135deg,
+          rgba(37, 99, 235, 1) 0%,
+          rgba(59, 130, 246, 1) 100%
+        );
+        transform: translateY(-3px);
+        box-shadow: 
+          0 8px 24px rgba(37, 99, 235, 0.5),
+          0 6px 16px rgba(37, 99, 235, 0.4),
+          inset 0 1px 0 rgba(255, 255, 255, 0.12);
       }
 
       .dialer-dialog__action-btn--call:disabled {
