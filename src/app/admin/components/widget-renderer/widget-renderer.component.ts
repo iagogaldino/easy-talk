@@ -35,6 +35,7 @@ import { WidgetDeliveriesComponent } from '../widget-deliveries/widget-deliverie
 import { WidgetDocumentsComponent } from '../widget-documents/widget-documents.component';
 import { WidgetInactiveClientsComponent } from '../widget-inactive-clients/widget-inactive-clients.component';
 import { WidgetServiceFunnelComponent } from '../widget-service-funnel/widget-service-funnel.component';
+import { WidgetUsersManagementComponent } from '../widget-users-management/widget-users-management.component';
 
 @Component({
   selector: 'app-widget-renderer',
@@ -74,6 +75,7 @@ import { WidgetServiceFunnelComponent } from '../widget-service-funnel/widget-se
     WidgetDocumentsComponent,
     WidgetInactiveClientsComponent,
     WidgetServiceFunnelComponent,
+    WidgetUsersManagementComponent,
   ],
   template: `
     <ng-container [ngSwitch]="widget.type">
@@ -110,6 +112,7 @@ import { WidgetServiceFunnelComponent } from '../widget-service-funnel/widget-se
       <app-widget-documents *ngSwitchCase="'documents'" [widget]="$any(widget)"></app-widget-documents>
       <app-widget-inactive-clients *ngSwitchCase="'inactive-clients'" [widget]="$any(widget)"></app-widget-inactive-clients>
       <app-widget-service-funnel *ngSwitchCase="'service-funnel'" [widget]="$any(widget)"></app-widget-service-funnel>
+      <app-widget-users-management *ngSwitchCase="'users-management'" [widget]="$any(widget)"></app-widget-users-management>
     </ng-container>
   `,
 })

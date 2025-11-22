@@ -551,6 +551,14 @@ export class AdminPageComponent implements AfterViewChecked {
     this.router.navigate(['/']);
   }
 
+  protected openCreateUserDialog(): void {
+    // Create users management widget instead of opening dialog
+    const usersWidget = this.widgetService.createUsersManagementWidget();
+    this.widgets.push(usersWidget);
+    this.activeWidgetId = usersWidget.id;
+    this.cdr.detectChanges();
+  }
+
   protected handleClearMessages(): void {
     // Confirmação antes de limpar
     if (confirm('Tem certeza que deseja limpar todas as mensagens? Esta ação não pode ser desfeita.')) {

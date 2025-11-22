@@ -26,6 +26,15 @@
         <button
           mat-icon-button
           class="admin-page__sidebar-button"
+          (click)="openCreateUserDialog()"
+          aria-label="Criar usuário"
+          matTooltip="Criar usuário"
+        >
+          <mat-icon>person_add</mat-icon>
+        </button>
+        <button
+          mat-icon-button
+          class="admin-page__sidebar-button"
           (click)="handleClearMessages()"
           aria-label="Limpar mensagens"
           matTooltip="Limpar mensagens"

@@ -1,4 +1,4 @@
-export type WidgetType = 'card' | 'chart' | 'table' | 'button' | 'input' | 'text' | 'list' | 'metric' | 'seller-chart' | 'seller-profile' | 'kpi-metrics' | 'sales-chart' | 'product-chart' | 'region-chart' | 'funnel-chart' | 'segment-chart' | 'sales-table' | 'products-table' | 'clients-table' | 'employees-table' | 'tasks-list' | 'alerts-list' | 'events-list' | 'system-status' | 'operations-status' | 'alerts-dashboard' | 'sales-comparison' | 'sellers-comparison' | 'products-comparison' | 'regions-comparison' | 'widgets-menu' | 'deliveries' | 'documents' | 'inactive-clients' | 'service-funnel';
+export type WidgetType = 'card' | 'chart' | 'table' | 'button' | 'input' | 'text' | 'list' | 'metric' | 'seller-chart' | 'seller-profile' | 'kpi-metrics' | 'sales-chart' | 'product-chart' | 'region-chart' | 'funnel-chart' | 'segment-chart' | 'sales-table' | 'products-table' | 'clients-table' | 'employees-table' | 'tasks-list' | 'alerts-list' | 'events-list' | 'system-status' | 'operations-status' | 'alerts-dashboard' | 'sales-comparison' | 'sellers-comparison' | 'products-comparison' | 'regions-comparison' | 'widgets-menu' | 'deliveries' | 'documents' | 'inactive-clients' | 'service-funnel' | 'users-management';
 
 export interface BaseWidget {
   id: string;
@@ -472,6 +472,10 @@ export interface ServiceFunnelWidget extends BaseWidget {
   conversionRate: number;
 }
 
+export interface UsersManagementWidget extends BaseWidget {
+  type: 'users-management';
+}
+
 export type Widget = 
   | CardWidget 
   | ChartWidget 
@@ -507,7 +511,8 @@ export type Widget =
   | DeliveriesWidget
   | DocumentsWidget
   | InactiveClientsWidget
-  | ServiceFunnelWidget;
+  | ServiceFunnelWidget
+  | UsersManagementWidget;
 
 export interface ChatMessage {
   id: string;

@@ -27,6 +27,7 @@ import {
   DocumentsWidget,
   InactiveClientsWidget,
   ServiceFunnelWidget,
+  UsersManagementWidget,
 } from '../models/widget.model';
 import { MOCK_SELLERS, getTopSellers, Seller } from '../../mocks/admin/mock-sellers';
 import { getAllKPIs, getKPIsByCategory } from '../../mocks/admin/mock-kpis';
@@ -875,6 +876,17 @@ export class WidgetService {
           ],
         },
       ],
+    };
+  }
+
+  /**
+   * Cria um widget de gerenciamento de usuários
+   */
+  createUsersManagementWidget(): UsersManagementWidget {
+    return {
+      id: this.generateId(),
+      type: 'users-management',
+      title: 'Users Management',
     };
   }
 

@@ -1,0 +1,92 @@
+.create-user-dialog {
+  min-width: 400px;
+  max-width: 500px;
+
+  h2 {
+    margin: 0 0 24px 0;
+    font-size: 24px;
+    font-weight: 500;
+  }
+}
+
+mat-dialog-content {
+  padding: 0 24px;
+  max-height: 70vh;
+  overflow-y: auto;
+}
+
+.form-row {
+  margin-bottom: 16px;
+
+  mat-form-field {
+    width: 100%;
+  }
+
+  mat-checkbox {
+    margin-top: 8px;
+  }
+}
+
+.full-width {
+  width: 100%;
+}
+
+.error-message,
+.success-message {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  padding: 12px;
+  border-radius: 4px;
+  margin-top: 16px;
+  font-size: 14px;
+
+  mat-icon {
+    font-size: 20px;
+    width: 20px;
+    height: 20px;
+  }
+}
+
+.error-message {
+  background-color: #ffebee;
+  color: #c62828;
+
+  mat-icon {
+    color: #c62828;
+  }
+}
+
+.success-message {
+  background-color: #e8f5e9;
+  color: #2e7d32;
+
+  mat-icon {
+    color: #2e7d32;
+  }
+}
+
+mat-dialog-actions {
+  padding: 16px 24px;
+  margin: 0;
+  border-top: 1px solid rgba(0, 0, 0, 0.12);
+
+  button {
+    margin-left: 8px;
+  }
+}
+
+.button-spinner {
+  display: inline-block;
+  margin-right: 8px;
+}
+
+::ng-deep {
+  .mat-mdc-form-field {
+    .mat-icon {
+      margin-right: 8px;
+      color: rgba(0, 0, 0, 0.54);
+    }
+  }
+}
+
