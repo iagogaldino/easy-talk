@@ -16,8 +16,7 @@ interface VoiceCallDialogData {
   imports: [CommonModule, MatDialogModule, MatButtonModule, MatIconModule],
   template: `
     <h2 mat-dialog-title class="voice-dialog__title">
-      <span>Iniciar chamada de voz</span>
-      <small>Escolha o melhor canal para simular a experiência do cliente</small>
+      <span>Chamada de voz</span>
     </h2>
     <div mat-dialog-content class="voice-dialog">
       <div class="voice-dialog__contact voice-dialog__section">
@@ -39,70 +38,28 @@ interface VoiceCallDialogData {
         </div>
       </div>
 
-      <ng-container [ngSwitch]="simulationStep">
-        <div *ngSwitchCase="'idle'" class="voice-dialog__options voice-dialog__section">
-          <button
-            mat-stroked-button
-            color="primary"
-            class="voice-dialog__option-btn"
-            (click)="startSimulation('phone')"
-          >
-            <span class="voice-dialog__option-icon">
-              <mat-icon>call</mat-icon>
-            </span>
-            <span class="voice-dialog__option-copy">
-              <strong>Ligar normal</strong>
-              <small>Simulação de chamada telefônica</small>
-            </span>
-          </button>
-          <button
-            mat-flat-button
-            color="primary"
-            class="voice-dialog__option-btn voice-dialog__option-btn--whatsapp"
-            (click)="startSimulation('whatsapp')"
-          >
-            <span class="voice-dialog__option-icon">
-              <mat-icon>phone_in_talk</mat-icon>
-            </span>
-            <span class="voice-dialog__option-copy">
-              <strong>Ligar pelo WhatsApp</strong>
-              <small>Simulação de chamada pelo app</small>
-            </span>
-          </button>
+      <div class="voice-dialog__simulation voice-dialog__section">
+        <div
+          class="voice-dialog__pulse"
+          [ngClass]="{
+            'voice-dialog__pulse--connected': simulationStep === 'connected'
+          }"
+        >
+          <mat-icon>{{ simulationIcon }}</mat-icon>
         </div>
 
-        <div *ngSwitchDefault class="voice-dialog__simulation voice-dialog__section">
-          <div
-            class="voice-dialog__pulse"
-            [ngClass]="{
-              'voice-dialog__pulse--connected': simulationStep === 'connected',
-              'voice-dialog__pulse--whatsapp': simulationChannel === 'whatsapp'
-            }"
-          >
-            <mat-icon>{{ simulationIcon }}</mat-icon>
-          </div>
-
-          <div class="voice-dialog__status">
-            <span
-              class="voice-dialog__channel"
-              [ngClass]="{
-                'voice-dialog__channel--phone': simulationChannel === 'phone',
-                'voice-dialog__channel--whatsapp': simulationChannel === 'whatsapp'
-              }"
-              >{{ simulationChannelLabel }}</span
-            >
-            <span class="voice-dialog__status-title">{{ simulationStatusMessage }}</span>
-            <p>{{ simulationDescription }}</p>
-            <div *ngIf="simulationStep === 'connected'" class="voice-dialog__timer">
-              {{ simulationTimer }}
-            </div>
-          </div>
-
-          <div class="voice-dialog__simulation-actions">
-            <button mat-stroked-button color="warn" (click)="resetSimulation()">Encerrar simulação</button>
+        <div class="voice-dialog__status">
+          <span class="voice-dialog__status-title">{{ simulationStatusMessage }}</span>
+          <p>{{ simulationDescription }}</p>
+          <div *ngIf="simulationStep === 'connected'" class="voice-dialog__timer">
+            {{ simulationTimer }}
           </div>
         </div>
-      </ng-container>
+
+        <div class="voice-dialog__simulation-actions">
+          <button mat-stroked-button color="warn" (click)="close()">Encerrar chamada</button>
+        </div>
+      </div>
     </div>
 
     <div mat-dialog-actions class="voice-dialog__footer">
@@ -207,96 +164,13 @@ interface VoiceCallDialogData {
         color: rgba(15, 23, 42, 0.64);
       }
 
-      .voice-dialog__options {
-        display: grid;
-        gap: 0.75rem;
-      }
-
-      .voice-dialog__option-btn {
-        width: 100%;
-        border-radius: 18px;
-        position: relative;
-        overflow: hidden;
-        border-width: 1px !important;
-        border-color: rgba(15, 23, 42, 0.08) !important;
-        background: rgba(255, 255, 255, 0.92);
-        box-shadow: 0 8px 20px rgba(15, 23, 42, 0.06);
-        transition: transform 160ms ease, box-shadow 160ms ease, border-color 160ms ease;
-      }
-
-      .voice-dialog__option-btn .mdc-button__label {
-        display: grid;
-        grid-template-columns: auto 1fr;
-        align-items: center;
-        gap: 0.85rem;
-        padding: 0.85rem 1.1rem;
-        width: 100%;
-      }
-
-      .voice-dialog__option-btn:hover {
-        transform: translateY(-2px);
-        box-shadow: 0 14px 26px rgba(15, 23, 42, 0.12);
-        border-color: rgba(59, 130, 246, 0.24) !important;
-      }
-
-      .voice-dialog__option-icon {
-        width: 48px;
-        height: 48px;
-        border-radius: 16px;
-        display: grid;
-        place-items: center;
-        background: linear-gradient(135deg, rgba(59, 130, 246, 0.28), rgba(59, 130, 246, 0.12));
-        color: #1d4ed8;
-        box-shadow: inset 0 0 0 1px rgba(37, 99, 235, 0.16);
-      }
-
-      .voice-dialog__option-btn mat-icon {
-        font-size: 1.6rem;
-      }
-
-      .voice-dialog__option-copy {
-        display: block;
-      }
-
-      .voice-dialog__option-btn strong {
-        display: block;
-        font-weight: 600;
-        font-size: 1.05rem;
-        color: rgba(15, 23, 42, 0.92);
-      }
-
-      .voice-dialog__option-btn small {
-        display: block;
-        font-size: 0.85rem;
-        color: rgba(15, 23, 42, 0.56);
-      }
-
-      .voice-dialog__option-btn--whatsapp {
-        background: linear-gradient(135deg, #22c55e, #0ea24a);
-        color: #fff;
-        border-color: rgba(16, 185, 129, 0.48) !important;
-        box-shadow: 0 18px 32px rgba(34, 197, 94, 0.32);
-      }
-
-      .voice-dialog__option-btn--whatsapp .mdc-button__label {
-        color: inherit;
-      }
-
-      .voice-dialog__option-btn--whatsapp small {
-        color: rgba(255, 255, 255, 0.82);
-      }
-
-      .voice-dialog__option-btn--whatsapp .voice-dialog__option-icon {
-        background: rgba(255, 255, 255, 0.18);
-        color: #ecfdf5;
-        box-shadow: inset 0 0 0 1px rgba(255, 255, 255, 0.36);
-      }
-
       .voice-dialog__simulation {
         display: grid;
-        grid-template-columns: auto 1fr;
+        grid-template-columns: 1fr;
         gap: 1.5rem;
         align-items: center;
+        justify-items: center;
+        text-align: center;
       }
 
       .voice-dialog__pulse {
@@ -313,13 +187,6 @@ interface VoiceCallDialogData {
         box-shadow: 0 14px 26px rgba(59, 130, 246, 0.18);
       }
 
-      .voice-dialog__pulse--whatsapp {
-        background: rgba(34, 197, 94, 0.18);
-        color: #15803d;
-        border-color: rgba(34, 197, 94, 0.28);
-        box-shadow: 0 14px 26px rgba(34, 197, 94, 0.2);
-      }
-
       .voice-dialog__pulse--connected {
         background: #22c55e;
         color: #fff;
@@ -331,30 +198,7 @@ interface VoiceCallDialogData {
       .voice-dialog__status {
         display: grid;
         gap: 0.4rem;
-      }
-
-      .voice-dialog__channel {
-        display: inline-flex;
-        align-items: center;
-        gap: 0.3rem;
-        font-size: 0.75rem;
-        text-transform: uppercase;
-        letter-spacing: 0.08em;
-        color: rgba(15, 23, 42, 0.56);
-        padding: 0.35rem 0.75rem;
-        border-radius: 999px;
-        background-color: rgba(15, 23, 42, 0.05);
-        width: fit-content;
-      }
-
-      .voice-dialog__channel--phone {
-        background: rgba(59, 130, 246, 0.14);
-        color: #1d4ed8;
-      }
-
-      .voice-dialog__channel--whatsapp {
-        background: rgba(34, 197, 94, 0.18);
-        color: #15803d;
+        text-align: center;
       }
 
       .voice-dialog__status-title {
@@ -381,7 +225,12 @@ interface VoiceCallDialogData {
       }
 
       .voice-dialog__simulation-actions {
-        justify-self: end;
+        justify-self: center;
+        width: 100%;
+      }
+
+      .voice-dialog__simulation-actions button {
+        width: 100%;
       }
 
       .voice-dialog__footer {
@@ -401,24 +250,6 @@ interface VoiceCallDialogData {
       }
 
       @media (max-width: 520px) {
-        .voice-dialog__simulation {
-          grid-template-columns: 1fr;
-          justify-items: center;
-          text-align: center;
-        }
-
-        .voice-dialog__simulation-actions {
-          justify-self: stretch;
-        }
-
-        .voice-dialog__simulation-actions button {
-          width: 100%;
-        }
-
-        .voice-dialog__pulse {
-          margin-bottom: 0.5rem;
-        }
-
         .voice-dialog__section {
           padding: 1.25rem;
         }
@@ -432,8 +263,8 @@ export class ContactVoiceDialogComponent implements OnDestroy {
   protected readonly avatarColor: string;
   protected readonly contactInitials: string;
   protected readonly avatarUrl: string | null;
-  protected simulationStep: 'idle' | 'dialing' | 'connected' = 'idle';
-  protected simulationChannel: 'phone' | 'whatsapp' | null = null;
+  protected simulationStep: 'idle' | 'dialing' | 'connected' = 'dialing';
+  protected simulationChannel: 'phone' | 'whatsapp' | null = 'phone';
   protected simulationTimer = '00:00';
   private simulationTimeout: ReturnType<typeof setTimeout> | null = null;
   private simulationInterval: ReturnType<typeof setInterval> | null = null;
@@ -449,6 +280,9 @@ export class ContactVoiceDialogComponent implements OnDestroy {
     this.avatarColor = conversation.avatarColor ?? '#3f51b5';
     this.avatarUrl = conversation.avatarUrl ?? null;
     this.contactInitials = this.buildInitials(this.displayName);
+    
+    // Inicia automaticamente a simulação quando o modal é aberto
+    this.startSimulation('phone');
   }
 
   protected close(): void {
@@ -471,19 +305,9 @@ export class ContactVoiceDialogComponent implements OnDestroy {
 
   protected resetSimulation(): void {
     this.clearSimulationTimers();
-    this.simulationStep = 'idle';
-    this.simulationChannel = null;
+    this.simulationStep = 'dialing';
+    this.simulationChannel = 'phone';
     this.simulationTimer = '00:00';
-  }
-
-  protected get simulationChannelLabel(): string {
-    if (this.simulationChannel === 'phone') {
-      return 'Ligação tradicional';
-    }
-    if (this.simulationChannel === 'whatsapp') {
-      return 'Chamada pelo WhatsApp';
-    }
-    return '';
   }
 
   protected get simulationStatusMessage(): string {
@@ -510,7 +334,7 @@ export class ContactVoiceDialogComponent implements OnDestroy {
     if (this.simulationStep === 'connected') {
       return 'call';
     }
-    return this.simulationChannel === 'whatsapp' ? 'phone_in_talk' : 'ring_volume';
+    return 'ring_volume';
   }
 
   ngOnDestroy(): void {

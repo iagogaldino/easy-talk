@@ -5,16 +5,19 @@ import { MatButtonModule } from '@angular/material/button';
 import { MatDialog } from '@angular/material/dialog';
 import { MatIconModule } from '@angular/material/icon';
 import { MatProgressSpinnerModule } from '@angular/material/progress-spinner';
-import { Observable, filter } from 'rxjs';
+import { Observable, filter, combineLatest } from 'rxjs';
+import { map } from 'rxjs/operators';
 
 import { AssistantContextMessage, Conversation } from '../../models/conversation.model';
 import { ConversationsService } from '../../services/conversations.service';
+import { CallService } from '../../services/call.service';
 import { ChatListComponent } from '../../components/chat-list/chat-list.component';
 import { ChatWindowComponent } from '../../components/chat-window/chat-window.component';
 import { ContactProfileComponent } from '../../components/contact-profile/contact-profile.component';
 import { AssistantPanelComponent } from '../../components/assistant-panel/assistant-panel.component';
 import { DialerDialogComponent } from '../../components/dialer/dialer-dialog.component';
 import { SettingsDialogComponent } from '../../components/settings-dialog/settings-dialog.component';
+import { ActiveCallBannerComponent } from '../../components/active-call-banner/active-call-banner.component';
 
 interface NavItem {
   icon: string;
@@ -35,6 +38,7 @@ interface NavItem {
     ChatWindowComponent,
     ContactProfileComponent,
     AssistantPanelComponent,
+    ActiveCallBannerComponent,
   ],
   templateUrl: './conversations-page.component.html',
   styleUrls: ['./conversations-page.component.scss'],
@@ -47,6 +51,7 @@ export class ConversationsPageComponent implements OnInit {
   protected isProfilePanelOpen = false;
   protected isAssistantPanelOpen = false;
   protected showBackToAdmin = false;
+  protected hasActiveCall = false;
   protected readonly assistantMessages: AssistantContextMessage[] = [
     {
       id: 'ai-1',
@@ -83,12 +88,32 @@ export class ConversationsPageComponent implements OnInit {
     private readonly dialog: MatDialog,
     private readonly router: Router,
     private readonly cdr: ChangeDetectorRef,
+    private readonly callService: CallService,
   ) {}
 
   ngOnInit(): void {
     this.conversations$ = this.conversationsService.conversations$;
     this.selectedConversationId$ = this.conversationsService.selectedConversationId$;
     this.selectedConversation$ = this.conversationsService.selectedConversation$;
+    
+    // Observa ligações ativas E conversa selecionada para ajustar o layout
+    // Só aplica margin-top se houver ligação E a conversa selecionada for diferente da ligação
+    combineLatest([
+      this.callService.activeCall$,
+      this.conversationsService.selectedConversationId$
+    ]).pipe(
+      map(([call, selectedConversationId]) => {
+        // Se não há ligação, não precisa de margin-top
+        if (!call) {
+          return false;
+        }
+        // Se a conversa selecionada é a mesma da ligação, não precisa de margin-top
+        return call.conversation.id !== selectedConversationId;
+      })
+    ).subscribe((shouldShowBanner) => {
+      this.hasActiveCall = shouldShowBanner;
+      this.cdr.detectChanges();
+    });
     
     // Verifica se veio da página admin através do sessionStorage
     this.checkIfFromAdmin();

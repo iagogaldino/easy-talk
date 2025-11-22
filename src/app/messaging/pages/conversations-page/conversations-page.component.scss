@@ -5,6 +5,34 @@
   height: 100vh;
   background-color: transparent;
   transition: grid-template-columns 350ms cubic-bezier(0.4, 0, 0.2, 1);
+  position: relative;
+}
+
+.conversations-page > app-active-call-banner {
+  position: fixed;
+  top: 0;
+  left: 0;
+  right: 0;
+  z-index: 1000;
+  pointer-events: auto;
+}
+
+.conversations-page > app-active-call-banner ::ng-deep .active-call-banner {
+  pointer-events: all;
+}
+
+.conversations-page > app-active-call-banner ::ng-deep button {
+  pointer-events: all;
+  cursor: pointer;
+}
+
+.conversations-page--call-active .conversations-page__nav,
+.conversations-page--call-active .conversations-page__sidebar,
+.conversations-page--call-active .conversations-page__chat,
+.conversations-page--call-active .conversations-page__profile,
+.conversations-page--call-active .conversations-page__assistant {
+  margin-top: 60px;
+  height: calc(100vh - 60px);
 }
 
 .conversations-page--profile-open {

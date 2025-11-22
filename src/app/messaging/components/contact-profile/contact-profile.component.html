@@ -28,10 +28,36 @@
       <p class="contact-profile__nickname" *ngIf="convo.profile?.nickname">{{ convo.profile?.nickname }}</p>
     </div>
 
+    <!-- Estado de chamada -->
+    <div 
+      class="contact-profile__call-status" 
+      [class.contact-profile__call-status--connected]="callState === 'connected'"
+      *ngIf="callState !== 'idle'"
+    >
+      <div
+        class="contact-profile__call-pulse"
+        [class.contact-profile__call-pulse--connected]="callState === 'connected'"
+      >
+        <mat-icon>{{ callIcon }}</mat-icon>
+      </div>
+      <div class="contact-profile__call-info">
+        <span class="contact-profile__call-status-title">{{ callStatusMessage }}</span>
+        <p class="contact-profile__call-description">{{ callDescription }}</p>
+        <div *ngIf="callState === 'connected'" class="contact-profile__call-timer">
+          {{ callTimer }}
+        </div>
+      </div>
+    </div>
+
     <div class="contact-profile__actions">
-      <button mat-stroked-button color="primary" (click)="handleVoiceCall()" [disabled]="!conversation">
-        <mat-icon>call</mat-icon>
-        Ligar
+      <button
+        mat-stroked-button
+        [color]="callState === 'connected' ? 'warn' : callState === 'dialing' ? 'warn' : 'primary'"
+        (click)="handleVoiceCall()"
+        [disabled]="!conversation"
+      >
+        <mat-icon>{{ getCallButtonIcon() }}</mat-icon>
+        {{ getCallButtonText() }}
       </button>
     </div>
   </section>
