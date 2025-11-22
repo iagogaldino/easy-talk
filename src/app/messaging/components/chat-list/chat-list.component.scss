@@ -413,3 +413,42 @@ mat-nav-list a {
   box-shadow: 0 2px 4px rgba(37, 99, 235, 0.3);
 }
 
+::ng-deep {
+  .mat-mdc-menu-panel {
+    background-color: rgba(40, 40, 40, 0.95) !important;
+    backdrop-filter: blur(10px) !important;
+    border: 1px solid rgba(255, 255, 255, 0.1) !important;
+    border-radius: 8px !important;
+    box-shadow: 0 8px 24px rgba(0, 0, 0, 0.5) !important;
+    min-width: 220px !important;
+    padding: 4px 0 !important;
+  }
+
+  .mat-mdc-menu-item {
+    color: rgba(255, 255, 255, 0.9) !important;
+    padding: 8px 16px !important;
+    min-height: 40px !important;
+    display: flex !important;
+    align-items: center !important;
+    cursor: pointer !important;
+    transition: background-color 0.2s ease !important;
+
+    &:hover {
+      background-color: rgba(255, 255, 255, 0.1) !important;
+    }
+
+    mat-icon {
+      color: rgba(255, 255, 255, 0.7) !important;
+      margin-right: 12px !important;
+      margin-left: 0 !important;
+      width: 20px !important;
+      height: 20px !important;
+      font-size: 20px !important;
+    }
+
+    span {
+      flex: 1 !important;
+    }
+  }
+}
+

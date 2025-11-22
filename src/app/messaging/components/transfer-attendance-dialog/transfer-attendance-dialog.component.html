@@ -1,0 +1,63 @@
+<div class="transfer-dialog">
+  <h2 mat-dialog-title>Transferir Atendimento</h2>
+
+  <mat-dialog-content>
+    <p class="transfer-dialog__subtitle">Selecione um funcionário para transferir o atendimento</p>
+
+    <mat-form-field appearance="outline" class="transfer-dialog__search">
+      <mat-label>Buscar funcionário</mat-label>
+      <input matInput [formControl]="searchControl" placeholder="Digite o nome ou email..." />
+      <mat-icon matPrefix>search</mat-icon>
+    </mat-form-field>
+
+    <div *ngIf="errorMessage" class="transfer-dialog__error">
+      <mat-icon>error</mat-icon>
+      <span>{{ errorMessage }}</span>
+    </div>
+
+    <div *ngIf="isLoading" class="transfer-dialog__loading">
+      <mat-spinner diameter="40"></mat-spinner>
+      <p>Carregando funcionários...</p>
+    </div>
+
+    <div *ngIf="!isLoading && employees.length === 0" class="transfer-dialog__empty">
+      <mat-icon>people</mat-icon>
+      <p>Nenhum funcionário disponível</p>
+    </div>
+
+    <mat-list *ngIf="!isLoading && employees.length > 0" class="transfer-dialog__list">
+      <ng-container *ngFor="let employee of filteredEmployees$ | async; trackBy: trackByEmployeeId">
+        <mat-list-item 
+          (click)="selectEmployee(employee)"
+          [class.transfer-dialog__item--selected]="selectedEmployee?._id === employee._id"
+          class="transfer-dialog__item"
+        >
+          <div matListItemAvatar class="transfer-dialog__avatar">
+            {{ getInitials(employee.name) }}
+          </div>
+          <div matListItemTitle>{{ employee.name }}</div>
+          <div matListItemLine class="transfer-dialog__email">{{ employee.email }}</div>
+          <mat-icon *ngIf="selectedEmployee?._id === employee._id" matListItemMeta class="transfer-dialog__check">
+            check_circle
+          </mat-icon>
+        </mat-list-item>
+      </ng-container>
+    </mat-list>
+  </mat-dialog-content>
+
+  <mat-dialog-actions align="end">
+    <button mat-button type="button" (click)="onCancel()">
+      Cancelar
+    </button>
+    <button 
+      mat-raised-button 
+      color="primary" 
+      (click)="onTransfer()"
+      [disabled]="!selectedEmployee"
+    >
+      <mat-icon>swap_horiz</mat-icon>
+      Transferir
+    </button>
+  </mat-dialog-actions>
+</div>
+

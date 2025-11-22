@@ -18,6 +18,7 @@ import { AssistantPanelComponent } from '../../components/assistant-panel/assist
 import { DialerDialogComponent } from '../../components/dialer/dialer-dialog.component';
 import { SettingsDialogComponent } from '../../components/settings-dialog/settings-dialog.component';
 import { ActiveCallBannerComponent } from '../../components/active-call-banner/active-call-banner.component';
+import { User } from '../../../admin/models/user.model';
 
 interface NavItem {
   icon: string;
@@ -141,6 +142,16 @@ export class ConversationsPageComponent implements OnInit {
     const fromAdmin = sessionStorage.getItem('fromAdmin');
     this.showBackToAdmin = fromAdmin === 'true';
     this.cdr.detectChanges();
+  }
+
+  protected handleTransferRequest(event: { conversationId: string; employee: User }): void {
+    // TODO: Implementar lógica de transferência de atendimento
+    console.log('Transferir atendimento:', {
+      conversationId: event.conversationId,
+      employee: event.employee
+    });
+    // Aqui você pode adicionar uma chamada à API para transferir o atendimento
+    // Por exemplo: this.conversationsService.transferConversation(event.conversationId, event.employee._id);
   }
 
   protected handleConversationSelection(conversationId: string): void {

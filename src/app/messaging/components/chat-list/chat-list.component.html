@@ -19,6 +19,7 @@
       mat-list-item
       *ngFor="let conversation of conversations; trackBy: trackByConversationId"
       (click)="handleSelection(conversation.id)"
+      (contextmenu)="onContextMenu($event, conversation.id)"
       [class.chat-list__item--active]="conversation.id === selectedConversationId"
       [class.chat-list__item--unread]="conversation.unreadCount && conversation.unreadCount > 0"
     >
@@ -47,5 +48,22 @@
       </div>
     </a>
   </mat-nav-list>
+
+  <button 
+    mat-button 
+    [matMenuTriggerFor]="contextMenu" 
+    #contextMenuTrigger="matMenuTrigger"
+    #contextMenuButton
+    style="position: fixed; opacity: 0; pointer-events: none; width: 1px; height: 1px; z-index: 1000;"
+    aria-hidden="true"
+    tabindex="-1"
+  ></button>
+
+  <mat-menu #contextMenu="matMenu" (closed)="contextMenuConversationId = null">
+    <button mat-menu-item (click)="openTransferDialog(); $event.stopPropagation()">
+      <mat-icon>swap_horiz</mat-icon>
+      <span>Transferir Atendimento</span>
+    </button>
+  </mat-menu>
 </div>
 

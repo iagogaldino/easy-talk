@@ -45,6 +45,7 @@
         [conversations]="conversations"
         [selectedConversationId]="(selectedConversationId$ | async) ?? null"
         (conversationSelected)="handleConversationSelection($event)"
+        (transferRequested)="handleTransferRequest($event)"
       ></app-chat-list>
     </ng-container>
   </section>
