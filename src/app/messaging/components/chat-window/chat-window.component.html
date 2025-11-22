@@ -1,8 +1,19 @@
 <ng-container *ngIf="conversation; else emptyState">
   <header class="chat-window__header" (click)="openProfile()" role="button" tabindex="0" (keydown.enter)="openProfile()" (keydown.space)="openProfile(); $event.preventDefault()">
     <div class="chat-window__contact">
-      <div class="chat-window__avatar" [style.background-color]="conversation.avatarColor">
-        {{ conversation.contactName[0] }}
+      <div class="chat-window__avatar-wrapper">
+        <img
+          *ngIf="shouldShowAvatarImage; else initials"
+          [src]="conversation.avatarUrl || conversation.profile?.avatarUrl"
+          [alt]="conversation.contactName"
+          class="chat-window__avatar-image"
+          (error)="onImageError($event)"
+        />
+        <ng-template #initials>
+          <div class="chat-window__avatar" [style.background-color]="conversation.avatarColor">
+            {{ conversation.contactName[0] }}
+          </div>
+        </ng-template>
       </div>
       <div>
         <h2 class="chat-window__name">{{ conversation.contactName }}</h2>
@@ -14,7 +25,7 @@
     </button>
   </header>
 
-  <section class="chat-window__messages">
+  <section class="chat-window__messages" #messagesContainer>
     <div
       *ngFor="let message of conversation.messages; trackBy: trackByMessageId"
       class="chat-window__message"
