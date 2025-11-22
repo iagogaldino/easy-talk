@@ -19,6 +19,7 @@ import { VoiceControlComponent } from '../voice-chat/components/voice-control/vo
 import { HttpClient } from '@angular/common/http';
 import { environment } from '../../environments/environment';
 import { MarkdownPipe } from './pipes/markdown.pipe';
+import { AuthService } from '../core/services/auth.service';
 
 @Component({
   selector: 'app-admin-page',
@@ -72,6 +73,7 @@ export class AdminPageComponent implements AfterViewChecked {
     private readonly aiChatService: AIChatService,
     private readonly http: HttpClient,
     private readonly widgetToolsService: WidgetToolsService,
+    private readonly authService: AuthService,
   ) {
     // Carrega largura salva do localStorage
     this.loadChatColumnWidth();
@@ -543,12 +545,7 @@ export class AdminPageComponent implements AfterViewChecked {
   }
 
   protected handleLogout(): void {
-    // Limpar dados de autenticação
-    localStorage.removeItem('authToken');
-    localStorage.removeItem('userEmail');
-
-    // Redirecionar para o login
-    this.router.navigate(['/']);
+    this.authService.logout();
   }
 
   protected openCreateUserDialog(): void {
