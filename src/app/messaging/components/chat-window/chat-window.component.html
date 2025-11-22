@@ -30,6 +30,9 @@
       *ngFor="let message of conversation.messages; trackBy: trackByMessageId"
       class="chat-window__message"
       [class.chat-window__message--agent]="message.author === 'agent'"
+      [draggable]="message.type === 'text' && message.content"
+      (dragstart)="onDragStart($event, message)"
+      (dragend)="onDragEnd($event)"
     >
       <ng-container [ngSwitch]="message.type">
         <p *ngSwitchCase="'text'" class="chat-window__message-content">{{ message.content }}</p>

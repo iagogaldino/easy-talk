@@ -1,4 +1,11 @@
-<aside class="assistant-panel" [class.assistant-panel--open]="open">
+<aside 
+  class="assistant-panel" 
+  [class.assistant-panel--open]="open"
+  [class.assistant-panel--drag-over]="isDragOver"
+  (dragover)="onDragOver($event)"
+  (dragleave)="onDragLeave($event)"
+  (drop)="onDrop($event)"
+>
   <header class="assistant-panel__header">
     <button mat-icon-button aria-label="Fechar" (click)="close()">
       <mat-icon>close</mat-icon>
@@ -6,9 +13,25 @@
     <h2>Assistente IA</h2>
   </header>
 
-  <section class="assistant-panel__body">
-    <div *ngFor="let message of messages" class="assistant-panel__message" [class.assistant-panel__message--agent]="message.author === 'agent'">
-      <p>{{ message.content }}</p>
+  <section class="assistant-panel__body" #messagesContainer>
+    <div *ngFor="let message of localMessages" class="assistant-panel__message" [class.assistant-panel__message--agent]="message.author === 'agent'">
+      <ng-container [ngSwitch]="message.type">
+        <p *ngSwitchCase="'text'">{{ message.content }}</p>
+        <figure *ngSwitchCase="'image'" class="assistant-panel__message-media">
+          <img 
+            [src]="getMessageMediaUrl(message)" 
+            [alt]="message.content || 'Imagem'"
+            (error)="onImageError($event)"
+          />
+          <figcaption *ngIf="message.content" class="assistant-panel__caption">{{ message.content }}</figcaption>
+        </figure>
+        <a *ngSwitchCase="'file'" class="assistant-panel__file" [href]="getMessageMediaUrl(message)" download>
+          <mat-icon>attach_file</mat-icon>
+          <span class="assistant-panel__file-info">
+            <strong>{{ message.content }}</strong>
+          </span>
+        </a>
+      </ng-container>
       <small>{{ message.timestamp | date: 'shortTime' }}</small>
     </div>
   </section>
@@ -20,7 +43,7 @@
         cdkAutosizeMinRows="1"
         cdkAutosizeMaxRows="4"
         [(ngModel)]="prompt"
-        placeholder="Pergunte algo ao assistente"
+        placeholder="Pergunte algo ao assistente sobre essa conversa"
         (keydown)="handleKeydown($event)"
       ></textarea>
       <button mat-icon-button color="primary" (click)="submit()" [disabled]="!canSubmit">

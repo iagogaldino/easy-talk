@@ -1,7 +1,7 @@
 import { Injectable } from '@angular/core';
 import { BehaviorSubject, map } from 'rxjs';
 
-import { Conversation } from '../models/conversation.model';
+import { Conversation, Message } from '../models/conversation.model';
 import { MOCK_CONVERSATIONS } from '../../mocks/messaging/mock-conversations';
 
 @Injectable({ providedIn: 'root' })
@@ -17,6 +17,29 @@ export class ConversationsService {
 
   selectConversation(conversationId: string): void {
     this.selectedConversationIdSubject.next(conversationId);
+  }
+
+  addMessageToConversation(conversationId: string, message: Message): void {
+    const conversations = this.conversationsSubject.value;
+    const conversationIndex = conversations.findIndex(c => c.id === conversationId);
+    
+    if (conversationIndex === -1) {
+      console.warn(`Conversa com ID ${conversationId} não encontrada`);
+      return;
+    }
+    
+    const conversation = conversations[conversationIndex];
+    const updatedConversation: Conversation = {
+      ...conversation,
+      messages: [...conversation.messages, message],
+      lastMessagePreview: message.content || message.fileName || 'Arquivo enviado',
+      lastMessageTime: message.timestamp,
+    };
+    
+    const updatedConversations = [...conversations];
+    updatedConversations[conversationIndex] = updatedConversation;
+    
+    this.conversationsSubject.next(updatedConversations);
   }
 }
 

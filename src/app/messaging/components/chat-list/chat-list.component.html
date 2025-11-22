@@ -1,7 +1,3 @@
-<mat-toolbar color="primary" class="chat-list__toolbar">
-  <span>Conversas</span>
-</mat-toolbar>
-
 <div class="chat-list__search">
   <mat-form-field appearance="outline" class="chat-list__search-field">
     <mat-icon matPrefix>search</mat-icon>
@@ -23,9 +19,20 @@
     *ngFor="let conversation of conversations; trackBy: trackByConversationId"
     (click)="handleSelection(conversation.id)"
     [class.chat-list__item--active]="conversation.id === selectedConversationId"
+    [class.chat-list__item--unread]="conversation.unreadCount && conversation.unreadCount > 0"
   >
-    <div matListItemAvatar class="chat-list__avatar" [style.background-color]="conversation.avatarColor">
-      {{ conversation.contactName[0] }}
+    <div matListItemAvatar class="chat-list__avatar-wrapper">
+      <img
+        *ngIf="conversation.avatarUrl || conversation.profile?.avatarUrl; else initials"
+        [src]="conversation.avatarUrl || conversation.profile?.avatarUrl"
+        [alt]="conversation.contactName"
+        class="chat-list__avatar-image"
+      />
+      <ng-template #initials>
+        <div class="chat-list__avatar" [style.background-color]="conversation.avatarColor">
+          {{ conversation.contactName[0] }}
+        </div>
+      </ng-template>
     </div>
     <div matListItemTitle>
       {{ conversation.contactName }}

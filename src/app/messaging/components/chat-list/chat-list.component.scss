@@ -22,24 +22,71 @@
 
 .chat-list__search {
   padding: 0.75rem;
+  position: relative;
+  z-index: 10;
+  animation: floatIn 0.5s cubic-bezier(0.4, 0, 0.2, 1) forwards;
+}
+
+@keyframes floatIn {
+  from {
+    opacity: 0;
+    transform: translateY(-10px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
 }
 
 .chat-list__search-field {
   width: 100%;
   --mdc-outlined-text-field-container-shape: 999px;
-  --mdc-outlined-text-field-outline-color: transparent;
-  --mdc-outlined-text-field-hover-outline-color: transparent;
-  --mdc-outlined-text-field-focus-outline-color: transparent;
+  --mdc-outlined-text-field-outline-color: transparent !important;
+  --mdc-outlined-text-field-hover-outline-color: transparent !important;
+  --mdc-outlined-text-field-focus-outline-color: transparent !important;
   --mdc-outlined-text-field-container-height: 46px;
+  transition: transform 0.3s cubic-bezier(0.4, 0, 0.2, 1), box-shadow 0.3s ease;
 }
 
-.chat-list__search-field .mat-mdc-form-field-flex {
-  background-color: rgba(40, 40, 40, 0.7);
-  backdrop-filter: blur(8px);
-  border-radius: 999px;
-  padding: 0 0.75rem;
-  gap: 0.25rem;
-  box-shadow: inset 0 0 0 1px rgba(255, 255, 255, 0.1);
+::ng-deep .chat-list__search-field {
+  .mat-mdc-form-field-flex {
+    background-color: rgba(40, 40, 40, 0.8) !important;
+    backdrop-filter: blur(16px) !important;
+    -webkit-backdrop-filter: blur(16px) !important;
+    border-radius: 999px !important;
+    padding: 0 0.75rem !important;
+    gap: 0.25rem !important;
+    border: 1px solid rgba(255, 255, 255, 0.08) !important;
+    box-shadow: 
+      0 4px 16px rgba(0, 0, 0, 0.4),
+      0 2px 8px rgba(0, 0, 0, 0.3),
+      inset 0 1px 0 rgba(255, 255, 255, 0.05) !important;
+    outline: none !important;
+    transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1) !important;
+    transform: translateY(0) !important;
+    
+    &:hover {
+      background-color: rgba(50, 50, 50, 0.85) !important;
+      border: 1px solid rgba(255, 255, 255, 0.12) !important;
+      box-shadow: 
+        0 6px 20px rgba(0, 0, 0, 0.5),
+        0 4px 12px rgba(0, 0, 0, 0.4),
+        inset 0 1px 0 rgba(255, 255, 255, 0.08) !important;
+      transform: translateY(-2px) !important;
+      outline: none !important;
+    }
+    
+    &:focus-within {
+      background-color: rgba(55, 55, 55, 0.9) !important;
+      border: 1px solid rgba(96, 165, 250, 0.3) !important;
+      box-shadow: 
+        0 8px 24px rgba(0, 0, 0, 0.6),
+        0 4px 16px rgba(37, 99, 235, 0.3),
+        inset 0 1px 0 rgba(255, 255, 255, 0.1) !important;
+      transform: translateY(-3px) !important;
+      outline: none !important;
+    }
+  }
 }
 
 .chat-list__search-field .mat-mdc-form-field-subscript-wrapper {
@@ -47,26 +94,188 @@
 }
 
 .chat-list__search-field .mdc-notched-outline {
-  display: none;
+  display: none !important;
+}
+
+.chat-list__search-field .mdc-notched-outline__leading,
+.chat-list__search-field .mdc-notched-outline__notch,
+.chat-list__search-field .mdc-notched-outline__trailing {
+  border: none !important;
+  border-color: transparent !important;
+  border-width: 0 !important;
+}
+
+.chat-list__search-field .mat-mdc-form-field-outline {
+  display: none !important;
+}
+
+.chat-list__search-field .mat-mdc-form-field-outline-thick {
+  display: none !important;
+}
+
+::ng-deep .chat-list__search-field {
+  .mdc-notched-outline,
+  .mdc-notched-outline__leading,
+  .mdc-notched-outline__notch,
+  .mdc-notched-outline__trailing,
+  .mat-mdc-form-field-outline,
+  .mat-mdc-form-field-outline-thick {
+    border: none !important;
+    border-color: transparent !important;
+    border-width: 0 !important;
+    display: none !important;
+  }
+  
+  .mat-mdc-form-field-outline-start,
+  .mat-mdc-form-field-outline-gap,
+  .mat-mdc-form-field-outline-end {
+    border: none !important;
+    border-color: transparent !important;
+    border-width: 0 !important;
+  }
 }
 
 .chat-list__search-field input {
   padding: 0.35rem 0;
+  color: rgba(255, 255, 255, 0.4);
+  transition: color 0.2s ease;
+  
+  &:focus {
+    color: var(--mat-sys-on-surface);
+  }
+  
+  &:not(:placeholder-shown) {
+    color: var(--mat-sys-on-surface);
+  }
 }
 
 .chat-list__search-field .mat-mdc-form-field-icon-prefix,
-.chat-list__search-field .mat-mdc-form-field-icon-suffix {
-  color: var(--mat-sys-on-surface-variant);
+.chat-list__search-field .mat-mdc-form-field-icon-suffix,
+.chat-list__search-field .mat-mdc-form-field-icon-prefix mat-icon,
+.chat-list__search-field .mat-mdc-form-field-icon-suffix mat-icon {
+  color: rgba(255, 255, 255, 0.4) !important;
+  transition: color 0.2s ease;
+}
+
+.chat-list__search-field .mat-mdc-form-field-flex:focus-within .mat-mdc-form-field-icon-prefix,
+.chat-list__search-field .mat-mdc-form-field-flex:focus-within .mat-mdc-form-field-icon-suffix,
+.chat-list__search-field .mat-mdc-form-field-flex:focus-within .mat-mdc-form-field-icon-prefix mat-icon,
+.chat-list__search-field .mat-mdc-form-field-flex:focus-within .mat-mdc-form-field-icon-suffix mat-icon {
+  color: var(--mat-sys-on-surface-variant) !important;
 }
 
 mat-nav-list {
   flex: 1;
   padding: 0;
   overflow-y: auto;
+  perspective: 1000px;
+}
+
+mat-nav-list a {
+  position: relative;
+  transition: all 300ms cubic-bezier(0.4, 0, 0.2, 1);
+  transform-style: preserve-3d;
+  border-radius: 8px;
+  margin: 0.125rem 0.5rem;
+  opacity: 0.6;
+  filter: brightness(0.85);
+  
+  &:hover {
+    transform: translateX(4px) translateZ(2px);
+    background-color: rgba(255, 255, 255, 0.03);
+    border-radius: 8px;
+    opacity: 0.8;
+    filter: brightness(0.9);
+  }
+  
+  &:active {
+    transform: translateX(2px) translateZ(1px);
+    border-radius: 8px;
+  }
+}
+
+.chat-list__item--unread {
+  opacity: 1 !important;
+  filter: brightness(1) !important;
+  
+  .chat-list__preview {
+    font-weight: 600;
+    color: var(--mat-sys-on-surface);
+  }
+  
+  .chat-list__time {
+    font-weight: 600;
+    color: var(--mat-sys-primary);
+  }
 }
 
 .chat-list__item--active {
-  background-color: rgba(66, 133, 244, 0.1);
+  background: linear-gradient(
+    135deg,
+    rgba(37, 99, 235, 0.15) 0%,
+    rgba(59, 130, 246, 0.12) 100%
+  );
+  border-left: 3px solid rgba(96, 165, 250, 0.8);
+  border-radius: 8px;
+  box-shadow: 
+    -4px 0 12px rgba(37, 99, 235, 0.2),
+    0 2px 8px rgba(0, 0, 0, 0.3),
+    inset 0 1px 0 rgba(255, 255, 255, 0.05);
+  transform: translateX(6px) translateZ(4px) scale(1.01);
+  position: relative;
+  margin: 0.25rem 0.5rem;
+  opacity: 1 !important;
+  filter: brightness(1) !important;
+  
+  &::before {
+    content: '';
+    position: absolute;
+    left: 0;
+    top: 0;
+    bottom: 0;
+    width: 3px;
+    background: linear-gradient(
+      180deg,
+      rgba(96, 165, 250, 0.6) 0%,
+      rgba(59, 130, 246, 0.8) 50%,
+      rgba(96, 165, 250, 0.6) 100%
+    );
+    box-shadow: 0 0 8px rgba(96, 165, 250, 0.4);
+  }
+  
+  &::after {
+    content: '';
+    position: absolute;
+    right: 0;
+    top: 0;
+    bottom: 0;
+    width: 1px;
+    background: linear-gradient(
+      180deg,
+      transparent 0%,
+      rgba(255, 255, 255, 0.1) 50%,
+      transparent 100%
+    );
+  }
+  
+  .chat-list__avatar,
+  .chat-list__avatar-image {
+    transform: scale(1.05);
+    box-shadow: 0 4px 12px rgba(37, 99, 235, 0.3);
+    transition: transform 300ms cubic-bezier(0.4, 0, 0.2, 1), box-shadow 300ms ease;
+  }
+  
+  .chat-list__preview,
+  .chat-list__time {
+    color: rgba(255, 255, 255, 0.9);
+    font-weight: normal;
+  }
+}
+
+.chat-list__avatar-wrapper {
+  position: relative;
+  width: 40px;
+  height: 40px;
 }
 
 .chat-list__avatar {
@@ -77,10 +286,29 @@ mat-nav-list {
   border-radius: 50%;
   color: #fff;
   font-weight: 600;
+  transition: transform 300ms cubic-bezier(0.4, 0, 0.2, 1), box-shadow 300ms ease;
+}
+
+.chat-list__avatar-image {
+  width: 40px;
+  height: 40px;
+  border-radius: 50%;
+  object-fit: cover;
+  display: block;
+  transition: transform 300ms cubic-bezier(0.4, 0, 0.2, 1), box-shadow 300ms ease;
 }
 
 .chat-list__preview {
   color: var(--mat-sys-on-surface-variant);
+  font-weight: normal;
+}
+
+::ng-deep mat-nav-list a .mdc-list-item__primary-text {
+  font-weight: 600 !important;
+}
+
+::ng-deep mat-nav-list a .mdc-list-item__secondary-text {
+  font-weight: normal !important;
 }
 
 .chat-list__meta {
@@ -96,11 +324,15 @@ mat-nav-list {
 }
 
 .chat-list__badge {
-  background-color: var(--mat-sys-primary);
-  color: var(--mat-sys-on-primary);
-  padding: 0 0.5rem;
+  background: linear-gradient(135deg, #2563eb, #3b82f6);
+  color: #ffffff;
+  padding: 0.125rem 0.5rem;
   border-radius: 999px;
   font-size: 0.75rem;
+  font-weight: 600;
   line-height: 1.5;
+  min-width: 1.5rem;
+  text-align: center;
+  box-shadow: 0 2px 4px rgba(37, 99, 235, 0.3);
 }
 

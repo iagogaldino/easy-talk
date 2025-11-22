@@ -7,12 +7,15 @@
 
   <section class="contact-profile__body" *ngIf="conversation as convo">
     <div class="contact-profile__avatar-wrapper">
-      <img
-        *ngIf="convo.avatarUrl; else initials"
-        [src]="convo.avatarUrl"
-        alt="Avatar"
-        class="contact-profile__avatar"
-      />
+      <ng-container *ngIf="avatarUrl; else initials">
+        <img
+          [src]="avatarUrl"
+          [alt]="convo.contactName"
+          class="contact-profile__avatar"
+          (error)="onImageError($event)"
+          (load)="onImageLoad($event)"
+        />
+      </ng-container>
       <ng-template #initials>
         <div
           class="contact-profile__avatar contact-profile__avatar--fallback"

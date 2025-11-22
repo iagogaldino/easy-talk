@@ -1,5 +1,5 @@
 import { CommonModule } from '@angular/common';
-import { Component, EventEmitter, Input, Output, OnDestroy, ChangeDetectorRef, OnInit } from '@angular/core';
+import { Component, EventEmitter, Input, Output, OnDestroy, ChangeDetectorRef, OnInit, OnChanges, SimpleChanges } from '@angular/core';
 import { MatIconModule } from '@angular/material/icon';
 import { MatButtonModule } from '@angular/material/button';
 import { Subscription } from 'rxjs';
@@ -14,13 +14,14 @@ import { CallService } from '../../services/call.service';
   templateUrl: './contact-profile.component.html',
   styleUrls: ['./contact-profile.component.scss'],
 })
-export class ContactProfileComponent implements OnInit, OnDestroy {
+export class ContactProfileComponent implements OnInit, OnDestroy, OnChanges {
   @Input() conversation: Conversation | null = null;
   @Input() open = false;
   @Output() closed = new EventEmitter<void>();
 
   protected callState: 'idle' | 'dialing' | 'connected' | 'ending' = 'idle';
   protected callTimer = '00:00';
+  protected avatarUrl: string | null = null;
   private subscription?: Subscription;
 
   constructor(
@@ -29,6 +30,9 @@ export class ContactProfileComponent implements OnInit, OnDestroy {
   ) {}
 
   ngOnInit(): void {
+    // Atualiza a URL do avatar quando a conversa muda
+    this.updateAvatarUrl();
+    
     // Observa mudanças na ligação ativa
     this.subscription = this.callService.activeCall$.subscribe((activeCall) => {
       if (activeCall && activeCall.conversation.id === this.conversation?.id) {
@@ -40,6 +44,22 @@ export class ContactProfileComponent implements OnInit, OnDestroy {
       }
       this.cdr.detectChanges();
     });
+  }
+
+  ngOnChanges(changes: SimpleChanges): void {
+    if (changes['conversation']) {
+      this.updateAvatarUrl();
+    }
+  }
+
+  private updateAvatarUrl(): void {
+    if (this.conversation) {
+      this.avatarUrl = this.conversation.avatarUrl || this.conversation.profile?.avatarUrl || null;
+      console.log('Avatar URL atualizado:', this.avatarUrl, 'para', this.conversation.contactName);
+      this.cdr.detectChanges();
+    } else {
+      this.avatarUrl = null;
+    }
   }
 
   protected close(): void {
@@ -116,5 +136,25 @@ export class ContactProfileComponent implements OnInit, OnDestroy {
 
   ngOnDestroy(): void {
     this.subscription?.unsubscribe();
+  }
+
+  protected getAvatarUrl(conversation: Conversation | null): string | null {
+    if (!conversation) return null;
+    const url = conversation.avatarUrl || conversation.profile?.avatarUrl || null;
+    console.log('Avatar URL para', conversation.contactName, ':', url);
+    console.log('conversation.avatarUrl:', conversation.avatarUrl);
+    console.log('conversation.profile?.avatarUrl:', conversation.profile?.avatarUrl);
+    return url;
+  }
+
+  protected onImageError(event: Event): void {
+    // Se a imagem falhar ao carregar, o template mostrará o fallback automaticamente
+    const img = event.target as HTMLImageElement;
+    console.error('Erro ao carregar imagem:', img.src);
+    img.style.display = 'none';
+  }
+
+  protected onImageLoad(event: Event): void {
+    console.log('Imagem carregada com sucesso:', (event.target as HTMLImageElement).src);
   }
 }

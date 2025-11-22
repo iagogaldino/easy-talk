@@ -65,7 +65,7 @@
 
 .chat-window__messages {
   flex: 1;
-  padding: 1.25rem;
+  padding: 0.5rem 1.25rem 1.25rem;
   overflow-y: auto;
   display: flex;
   flex-direction: column;
@@ -85,6 +85,23 @@
   flex-direction: column;
   gap: 0.5rem;
   color: var(--mat-sys-on-surface);
+  cursor: grab;
+  transition: transform 0.2s ease, opacity 0.2s ease, box-shadow 0.2s ease;
+
+  &:active {
+    cursor: grabbing;
+  }
+
+  &[draggable="true"]:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.4);
+  }
+}
+
+.chat-window__message--dragging {
+  opacity: 0.5;
+  transform: scale(0.95);
+  cursor: grabbing !important;
 }
 
 .chat-window__message--agent {
@@ -202,11 +219,20 @@
   border: none;
   outline: none;
   background: transparent;
-  color: var(--mat-sys-on-surface);
+  color: rgba(255, 255, 255, 0.4);
   font-size: 0.95rem;
   resize: none;
   min-height: 24px;
   line-height: 1.45;
+  transition: color 0.2s ease;
+  
+  &:focus {
+    color: var(--mat-sys-on-surface);
+  }
+  
+  &:not(:placeholder-shown) {
+    color: var(--mat-sys-on-surface);
+  }
 }
 
 .chat-window__composer-input::placeholder {

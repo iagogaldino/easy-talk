@@ -71,6 +71,7 @@
     [open]="isAssistantPanelOpen"
     [messages]="assistantMessages"
     (closed)="handleAssistantClosed()"
+    (fileSubmitted)="handleFileSubmitted($event)"
   ></app-assistant-panel>
 </div>
 

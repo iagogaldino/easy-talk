@@ -2,6 +2,80 @@ import { Conversation } from '../../messaging/models/conversation.model';
 
 export const MOCK_CONVERSATIONS: Conversation[] = [
   {
+    id: 'c0',
+    contactName: 'Bruna Castro',
+    contactNumber: '+55 62 93333-2211',
+    avatarColor: '#F4B400',
+    avatarUrl: 'https://randomuser.me/api/portraits/women/28.jpg',
+    lastMessagePreview: 'Segue a foto da vitrine montada! 😊',
+    lastMessageTime: new Date().toISOString(),
+    unreadCount: 0,
+    profile: {
+      displayName: 'Bruna Castro',
+      nickname: '~Design de vitrines',
+      status: 'Design de vitrines 💡',
+      phoneNumber: '+55 62 93333-2211',
+      temporaryMessages: 'disabled',
+      avatarUrl: 'https://randomuser.me/api/portraits/women/28.jpg',
+    },
+    messages: [
+      {
+        id: 'c0-m1',
+        author: 'client',
+        type: 'text',
+        content: 'Olá! Gostaria de mostrar algumas fotos da vitrine que montei.',
+        timestamp: new Date(Date.now() - 3600000).toISOString(),
+      },
+      {
+        id: 'c0-m2',
+        author: 'agent',
+        type: 'text',
+        content: 'Claro, Bruna! Pode enviar as fotos que vou analisar.',
+        timestamp: new Date(Date.now() - 3500000).toISOString(),
+        status: 'read',
+      },
+      {
+        id: 'c0-m3',
+        author: 'client',
+        type: 'image',
+        content: 'Segue a foto da vitrine montada! 😊',
+        mediaUrl: 'https://images.unsplash.com/photo-1523275335684-37898b6baf30?auto=format&fit=crop&w=900&q=80',
+        timestamp: new Date(Date.now() - 3400000).toISOString(),
+      },
+      {
+        id: 'c0-m4',
+        author: 'client',
+        type: 'image',
+        content: 'Outro ângulo da vitrine',
+        mediaUrl: 'https://images.unsplash.com/photo-1441986300917-64674bd600d8?auto=format&fit=crop&w=900&q=80',
+        timestamp: new Date(Date.now() - 3300000).toISOString(),
+      },
+      {
+        id: 'c0-m5',
+        author: 'client',
+        type: 'image',
+        content: 'Detalhe dos produtos expostos',
+        mediaUrl: 'https://images.unsplash.com/photo-1556742049-0cfed4f6a45d?auto=format&fit=crop&w=900&q=80',
+        timestamp: new Date(Date.now() - 3200000).toISOString(),
+      },
+      {
+        id: 'c0-m6',
+        author: 'agent',
+        type: 'text',
+        content: 'Ficou incrível, Bruna! As fotos estão muito boas. Posso te ligar para conversarmos melhor sobre os detalhes?',
+        timestamp: new Date(Date.now() - 3000000).toISOString(),
+        status: 'delivered',
+      },
+      {
+        id: 'c0-m7',
+        author: 'client',
+        type: 'text',
+        content: 'Perfeito! Pode ligar quando quiser, estou disponível.',
+        timestamp: new Date(Date.now() - 2900000).toISOString(),
+      },
+    ],
+  },
+  {
     id: 'c1',
     contactName: 'Ana Oliveira',
     contactNumber: '+55 11 91234-5678',
@@ -455,6 +529,70 @@ export const MOCK_CONVERSATIONS: Conversation[] = [
         content: 'Obrigado, João! Vou ouvir e te retorno ainda hoje.',
         timestamp: '2025-11-01T16:05:00Z',
         status: 'sent',
+      },
+    ],
+  },
+  {
+    id: 'c12',
+    contactName: 'Patricia Silva',
+    contactNumber: '+55 85 97777-3322',
+    avatarColor: '#FF5722',
+    avatarUrl: 'https://randomuser.me/api/portraits/women/45.jpg',
+    lastMessagePreview: 'Preciso de ajuda urgente com o sistema!',
+    lastMessageTime: new Date(Date.now() - 1800000).toISOString(), // 30 minutos atrás
+    unreadCount: 5,
+    profile: {
+      displayName: 'Patricia Silva',
+      nickname: '~Suporte Técnico',
+      status: 'Precisa de ajuda urgente ⚠️',
+      phoneNumber: '+55 85 97777-3322',
+      temporaryMessages: 'disabled',
+      avatarUrl: 'https://randomuser.me/api/portraits/women/45.jpg',
+    },
+    messages: [
+      {
+        id: 'c12-m1',
+        author: 'agent',
+        type: 'text',
+        content: 'Olá Patricia! Como posso ajudar hoje?',
+        timestamp: new Date(Date.now() - 7200000).toISOString(), // 2 horas atrás
+        status: 'read',
+      },
+      {
+        id: 'c12-m2',
+        author: 'client',
+        type: 'text',
+        content: 'Oi! Tudo bem? Preciso de ajuda com uma questão urgente.',
+        timestamp: new Date(Date.now() - 3600000).toISOString(), // 1 hora atrás
+      },
+      {
+        id: 'c12-m3',
+        author: 'client',
+        type: 'text',
+        content: 'O sistema está apresentando um erro quando tento fazer o upload de arquivos grandes.',
+        timestamp: new Date(Date.now() - 3300000).toISOString(), // 55 minutos atrás
+      },
+      {
+        id: 'c12-m4',
+        author: 'client',
+        type: 'image',
+        content: 'Segue o print do erro que está aparecendo.',
+        mediaUrl: 'https://images.unsplash.com/photo-1551650975-87deedd944c3?auto=format&fit=crop&w=900&q=80',
+        timestamp: new Date(Date.now() - 3000000).toISOString(), // 50 minutos atrás
+      },
+      {
+        id: 'c12-m5',
+        author: 'client',
+        type: 'text',
+        content: 'Já tentei várias vezes e o problema persiste. Pode ser urgente?',
+        timestamp: new Date(Date.now() - 2400000).toISOString(), // 40 minutos atrás
+      },
+      {
+        id: 'c12-m6',
+        author: 'client',
+        type: 'text',
+        content: 'Preciso de ajuda urgente com o sistema!',
+        timestamp: new Date(Date.now() - 1800000).toISOString(), // 30 minutos atrás
       },
     ],
   },

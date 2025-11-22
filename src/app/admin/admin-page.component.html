@@ -19,14 +19,25 @@
           class="admin-page__sidebar-button"
           (click)="navigateToConversations()"
           aria-label="Mensagens"
+          matTooltip="Mensagens"
         >
           <mat-icon>message</mat-icon>
+        </button>
+        <button
+          mat-icon-button
+          class="admin-page__sidebar-button"
+          (click)="handleClearMessages()"
+          aria-label="Limpar mensagens"
+          matTooltip="Limpar mensagens"
+        >
+          <mat-icon>delete_sweep</mat-icon>
         </button>
         <button
           mat-icon-button
           class="admin-page__sidebar-logout"
           (click)="handleLogout()"
           aria-label="Sair"
+          matTooltip="Sair"
         >
           <mat-icon>logout</mat-icon>
         </button>
@@ -49,7 +60,7 @@
       >
         <div 
           class="admin-page__message-content"
-          [innerHTML]="msg.isUser ? msg.content : (msg.content | markdown)"
+          [innerHTML]="msg.isUser ? msg.content : ((msg.displayedContent || msg.content) | markdown)"
         ></div>
       </div>
       

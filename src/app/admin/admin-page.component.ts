@@ -6,10 +6,11 @@ import { TextFieldModule } from '@angular/cdk/text-field';
 import { MatIconModule } from '@angular/material/icon';
 import { MatButtonModule } from '@angular/material/button';
 import { MatProgressSpinnerModule } from '@angular/material/progress-spinner';
+import { MatTooltipModule } from '@angular/material/tooltip';
 import { ChatMessage, Widget } from './models/widget.model';
-import { WidgetInterpreterService } from './services/widget-interpreter.service';
 import { WidgetService } from './services/widget.service';
 import { RecentWidgetsService } from './services/recent-widgets.service';
+import { WidgetToolsService } from './services/widget-tools.service';
 import { WidgetRendererComponent } from './components/widget-renderer/widget-renderer.component';
 import { Assets } from '../core/constants/assets.enum';
 import { VoiceChatService } from '../voice-chat/services/voice-chat.service';
@@ -29,6 +30,7 @@ import { MarkdownPipe } from './pipes/markdown.pipe';
     MatIconModule,
     MatButtonModule,
     MatProgressSpinnerModule,
+    MatTooltipModule,
     WidgetRendererComponent,
     VoiceControlComponent,
     MarkdownPipe,
@@ -49,6 +51,7 @@ export class AdminPageComponent implements AfterViewChecked {
   protected isProcessingAI = false;
   private shouldScrollToBottom = false;
   private previousMessagesLength = 0;
+  private typewriterSpeed = 20; // Milissegundos entre cada caractere
   
   // Resize da coluna do chat
   protected chatColumnWidth = 35; // Porcentagem padrão
@@ -61,7 +64,6 @@ export class AdminPageComponent implements AfterViewChecked {
   }
 
   constructor(
-    private readonly widgetInterpreter: WidgetInterpreterService,
     private readonly widgetService: WidgetService,
     private readonly cdr: ChangeDetectorRef,
     private readonly router: Router,
@@ -69,6 +71,7 @@ export class AdminPageComponent implements AfterViewChecked {
     private readonly voiceChatService: VoiceChatService,
     private readonly aiChatService: AIChatService,
     private readonly http: HttpClient,
+    private readonly widgetToolsService: WidgetToolsService,
   ) {
     // Carrega largura salva do localStorage
     this.loadChatColumnWidth();
@@ -147,15 +150,28 @@ export class AdminPageComponent implements AfterViewChecked {
   };
 
   private loadMessages(): void {
-    const apiUrl = `${environment.apiUrl}/chat/messages`;
+    const apiUrl = `${environment.backendUrl}/api/chat/messages`;
     this.http.get<{ success: boolean; messages: ChatMessage[] }>(apiUrl).subscribe({
       next: (response) => {
         if (response.success && response.messages) {
           // Converte timestamps de string para Date
+          // Mensagens carregadas não devem ter efeito de digitação
           this.messages = response.messages.map(msg => ({
             ...msg,
             timestamp: new Date(msg.timestamp),
+            displayedContent: msg.isUser ? undefined : msg.content, // Mensagens antigas já exibem conteúdo completo
+            isTyping: false,
           }));
+          
+          // Extrai o threadId da última mensagem que tiver threadId
+          const lastMessageWithThread = [...this.messages]
+            .reverse()
+            .find(msg => (msg as any).threadId);
+          if (lastMessageWithThread && (lastMessageWithThread as any).threadId) {
+            // Atualiza o threadId no serviço de chat
+            (this.aiChatService as any).threadId = (lastMessageWithThread as any).threadId;
+          }
+          
           this.previousMessagesLength = this.messages.length;
           this.cdr.detectChanges();
         }
@@ -184,86 +200,78 @@ export class AdminPageComponent implements AfterViewChecked {
 
     const messageText = this.message.trim();
     
+    // Obtém o threadId atual do serviço de chat
+    const currentThreadId = (this.aiChatService as any).threadId || undefined;
+    
     // Adiciona mensagem do usuário
     const userMessage: ChatMessage = {
       id: this.generateId(),
       content: messageText,
       isUser: true,
       timestamp: new Date(),
+      threadId: currentThreadId,
     };
     this.messages.push(userMessage);
     this.shouldScrollToBottom = true;
 
-    // Tenta interpretar e criar widget
-    const widget = this.widgetInterpreter.interpretMessage(messageText);
+    // Envia mensagem para a IA - o backend/agente decide se deve executar tools
+    this.isProcessingAI = true;
     
-    if (widget) {
-      // Adiciona widget à área de widgets
-      this.widgets.push(widget);
-      // Define como aba ativa
-      this.activeWidgetId = widget.id;
-      
-      // Adiciona aos widgets recentes
-      const command = this.getCommandForWidget(widget.type);
-      const icon = this.getIconForWidget(widget.type);
-      this.recentWidgetsService.addRecentWidget(widget, command, icon);
-      
-      // Adiciona mensagem da IA confirmando criação
-      const confirmationMessage = `Widget ${widget.type} criado com sucesso!`;
-      const aiMessage: ChatMessage = {
-        id: this.generateId(),
-        content: confirmationMessage,
-        isUser: false,
-        timestamp: new Date(),
-      };
-      this.messages.push(aiMessage);
-      this.shouldScrollToBottom = true;
-      
-      // Se modo voz ativo, fala a confirmação
-      if (this.isVoiceMode) {
-        this.voiceChatService.speak(confirmationMessage).catch(() => {
-          // Ignora erros de fala
-        });
-      }
-    } else {
-      // Se não criou widget, usa IA para conversação
-      this.isProcessingAI = true;
-      this.aiChatService.sendMessage(messageText).subscribe({
-        next: (aiResponse) => {
+    this.aiChatService.sendMessage(messageText).subscribe({
+      next: (response) => {
+        // Obtém o threadId atualizado do serviço após a resposta
+        const updatedThreadId = (this.aiChatService as any).threadId || currentThreadId;
+        
+        // Processa tool calls se a IA decidiu executar funções
+        if (response.toolCalls && response.toolCalls.length > 0) {
+          this.processToolCalls(response.toolCalls, response.response, updatedThreadId);
+        } else {
+          // Se não há tool calls, apenas exibe a resposta da IA
           const aiMessage: ChatMessage = {
             id: this.generateId(),
-            content: aiResponse,
+            content: response.response,
             isUser: false,
             timestamp: new Date(),
+            displayedContent: '',
+            isTyping: true,
+            threadId: updatedThreadId,
           };
           this.messages.push(aiMessage);
           this.isProcessingAI = false;
-          this.shouldScrollToBottom = true;
+          
+          // Aplica efeito de digitação
+          this.typewriterEffect(aiMessage);
           
           // Se modo voz ativo, fala a resposta
           if (this.isVoiceMode) {
-            this.voiceChatService.speak(aiResponse).catch(() => {
+            this.voiceChatService.speak(response.response).catch(() => {
               // Ignora erros de fala
             });
           }
           
           this.cdr.detectChanges();
-        },
-        error: (error: Error) => {
-          // Usa a mensagem de erro do backend se disponível
-          const errorMessage: ChatMessage = {
-            id: this.generateId(),
-            content: `⚠️ ${error.message || 'Desculpe, ocorreu um erro ao processar sua mensagem.'}`,
-            isUser: false,
-            timestamp: new Date(),
-          };
-          this.messages.push(errorMessage);
-          this.isProcessingAI = false;
-          this.shouldScrollToBottom = true;
-          this.cdr.detectChanges();
-        },
-      });
-    }
+        }
+      },
+      error: (error: Error) => {
+        // Usa a mensagem de erro do backend se disponível
+        const errorContent = `⚠️ ${error.message || 'Desculpe, ocorreu um erro ao processar sua mensagem.'}`;
+        const errorMessage: ChatMessage = {
+          id: this.generateId(),
+          content: errorContent,
+          isUser: false,
+          timestamp: new Date(),
+          displayedContent: '',
+          isTyping: true,
+        };
+        this.messages.push(errorMessage);
+        this.isProcessingAI = false;
+        
+        // Aplica efeito de digitação para mensagens de erro também
+        this.typewriterEffect(errorMessage);
+        
+        this.cdr.detectChanges();
+      },
+    });
 
     this.message = '';
   }
@@ -305,6 +313,42 @@ export class AdminPageComponent implements AfterViewChecked {
     }
   }
 
+  /**
+   * Aplica efeito de digitação (typewriter) a uma mensagem da IA
+   */
+  private typewriterEffect(message: ChatMessage): void {
+    if (!message || message.isUser) {
+      return;
+    }
+
+    const fullText = message.content;
+    let currentIndex = 0;
+    
+    // Inicializa o conteúdo exibido como vazio
+    message.displayedContent = '';
+    message.isTyping = true;
+    this.cdr.detectChanges();
+
+    const typeInterval = setInterval(() => {
+      if (currentIndex < fullText.length) {
+        // Adiciona o próximo caractere
+        message.displayedContent = fullText.substring(0, currentIndex + 1);
+        currentIndex++;
+        
+        // Faz scroll durante a digitação
+        this.shouldScrollToBottom = true;
+        this.cdr.detectChanges();
+      } else {
+        // Terminou a digitação
+        clearInterval(typeInterval);
+        message.isTyping = false;
+        message.displayedContent = fullText; // Garante que todo o texto está exibido
+        this.shouldScrollToBottom = true;
+        this.cdr.detectChanges();
+      }
+    }, this.typewriterSpeed);
+  }
+
   protected trackByIndex(_index: number, message: ChatMessage): string {
     return message.id;
   }
@@ -340,19 +384,86 @@ export class AdminPageComponent implements AfterViewChecked {
   }
 
   protected handleWidgetRequest(command: string): void {
-    // Simula o envio de uma mensagem com o comando do widget
-    const widget = this.widgetInterpreter.interpretMessage(command);
+    // Encontra o widget pelo comando no menu de widgets
+    const menuWidget = this.widgetService.createWidgetsMenuWidget();
+    let widgetItem: { id: string; name: string; icon?: string; command: string } | null = null;
     
-    if (widget) {
-      this.widgets.push(widget);
-      this.activeWidgetId = widget.id;
+    for (const category of menuWidget.categories) {
+      widgetItem = category.widgets.find(w => w.command === command) || null;
+      if (widgetItem) break;
+    }
+    
+    if (!widgetItem) {
+      // Se não encontrou o widget, envia para o chat como antes
+      this.message = command;
+      this.sendMessage();
+      return;
+    }
+    
+    // Mapeia o id do widget para o nome da tool
+    const toolName = this.getToolNameFromWidgetId(widgetItem.id);
+    
+    if (!toolName) {
+      // Se não encontrou a tool, envia para o chat como antes
+      this.message = command;
+      this.sendMessage();
+      return;
+    }
+    
+    // Executa a tool diretamente sem passar pelo chat
+    const result = this.widgetToolsService.executeTool(toolName, {});
+    
+    if (result.success && result.widget) {
+      // Adiciona widget à área de widgets
+      this.widgets.push(result.widget);
+      // Define como aba ativa
+      this.activeWidgetId = result.widget.id;
       
       // Adiciona aos widgets recentes
-      const icon = this.getIconForWidget(widget.type);
-      this.recentWidgetsService.addRecentWidget(widget, command, icon);
+      this.recentWidgetsService.addRecentWidget(result.widget, command, widgetItem.icon || '📊');
       
       this.cdr.detectChanges();
+    } else {
+      // Se falhou, envia para o chat como fallback
+      this.message = command;
+      this.sendMessage();
     }
+  }
+
+  /**
+   * Mapeia o id do widget para o nome da tool correspondente
+   */
+  private getToolNameFromWidgetId(widgetId: string): string | null {
+    const toolMap: Record<string, string> = {
+      'kpi-metrics': 'create_kpi_metrics_widget',
+      'seller-chart': 'create_seller_chart_widget',
+      'sales-chart': 'create_sales_chart_widget',
+      'product-chart': 'create_product_chart_widget',
+      'region-chart': 'create_region_chart_widget',
+      'funnel-chart': 'create_funnel_chart_widget',
+      'segment-chart': 'create_segment_chart_widget',
+      'sales-table': 'create_sales_table_widget',
+      'products-table': 'create_products_table_widget',
+      'clients-table': 'create_clients_table_widget',
+      'employees-table': 'create_employees_table_widget',
+      'tasks-list': 'create_tasks_list_widget',
+      'alerts-list': 'create_alerts_list_widget',
+      'events-list': 'create_events_list_widget',
+      'system-status': 'create_system_status_widget',
+      'operations-status': 'create_operations_status_widget',
+      'alerts-dashboard': 'create_alerts_dashboard_widget',
+      'sales-comparison': 'create_sales_comparison_widget',
+      'sellers-comparison': 'create_sellers_comparison_widget',
+      'products-comparison': 'create_products_comparison_widget',
+      'regions-comparison': 'create_regions_comparison_widget',
+      'deliveries': 'create_deliveries_widget',
+      'documents': 'create_documents_widget',
+      'inactive-clients': 'create_inactive_clients_widget',
+      'service-funnel': 'create_service_funnel_widget',
+      'widgets-menu': 'create_widgets_menu_widget',
+    };
+    
+    return toolMap[widgetId] || null;
   }
 
   private getCommandForWidget(widgetType: string): string {
@@ -392,15 +503,19 @@ export class AdminPageComponent implements AfterViewChecked {
     // apenas erros críticos devem aparecer no chat
     if (error.includes('conexão') || error.includes('internet') || 
         error.includes('permissão') || error.includes('microfone não encontrado')) {
+      const errorContent = `⚠️ ${error}`;
       const errorMessage: ChatMessage = {
         id: this.generateId(),
-        content: `⚠️ ${error}`,
+        content: errorContent,
         isUser: false,
         timestamp: new Date(),
+        displayedContent: '',
+        isTyping: true,
       };
       this.messages.push(errorMessage);
-      this.shouldScrollToBottom = true;
-      this.cdr.detectChanges();
+      
+      // Aplica efeito de digitação
+      this.typewriterEffect(errorMessage);
     }
     // Erros como "no-speech" não precisam aparecer no chat, apenas no tooltip/estado
   }
@@ -434,6 +549,115 @@ export class AdminPageComponent implements AfterViewChecked {
 
     // Redirecionar para o login
     this.router.navigate(['/']);
+  }
+
+  protected handleClearMessages(): void {
+    // Confirmação antes de limpar
+    if (confirm('Tem certeza que deseja limpar todas as mensagens? Esta ação não pode ser desfeita.')) {
+      this.aiChatService.clearAllMessages().subscribe({
+        next: () => {
+          // Limpa as mensagens localmente
+          this.messages = [];
+          this.previousMessagesLength = 0;
+          
+          // Limpa o histórico do serviço de chat
+          this.aiChatService.clearHistory();
+          
+          // Recarrega o widget padrão
+          this.widgets = [];
+          this.activeWidgetId = null;
+          this.initializeDefaultWidget();
+          
+          this.cdr.detectChanges();
+        },
+        error: (error: Error) => {
+          // Exibe mensagem de erro
+          const errorMessage: ChatMessage = {
+            id: this.generateId(),
+            content: `⚠️ ${error.message || 'Erro ao limpar mensagens.'}`,
+            isUser: false,
+            timestamp: new Date(),
+            displayedContent: '',
+            isTyping: true,
+          };
+          this.messages.push(errorMessage);
+          this.typewriterEffect(errorMessage);
+          this.cdr.detectChanges();
+        },
+      });
+    }
+  }
+
+  /**
+   * Processa tool calls retornados pela IA e executa as funções correspondentes
+   */
+  private processToolCalls(
+    toolCalls: Array<{ id: string; name: string; arguments: Record<string, any> }>,
+    aiResponse: string,
+    threadId?: string
+  ): void {
+    let widgetsCreated = 0;
+    const errors: string[] = [];
+
+    // Executa cada tool call
+    for (const toolCall of toolCalls) {
+      try {
+        const result = this.widgetToolsService.executeTool(toolCall.name, toolCall.arguments);
+        
+        if (result.success && result.widget) {
+          // Adiciona widget à área de widgets
+          this.widgets.push(result.widget);
+          // Define como aba ativa se for o primeiro widget criado
+          if (widgetsCreated === 0) {
+            this.activeWidgetId = result.widget.id;
+          }
+          
+          // Adiciona aos widgets recentes
+          const command = this.getCommandForWidget(result.widget.type);
+          const icon = this.getIconForWidget(result.widget.type);
+          this.recentWidgetsService.addRecentWidget(result.widget, command, icon);
+          
+          widgetsCreated++;
+        } else {
+          errors.push(result.error || `Erro ao executar ${toolCall.name}`);
+        }
+      } catch (error: any) {
+        errors.push(`Erro ao executar ${toolCall.name}: ${error.message}`);
+      }
+    }
+
+    // Adiciona mensagem da IA com resultado
+    let responseMessage = aiResponse;
+    if (widgetsCreated > 0) {
+      responseMessage += `\n\n✅ ${widgetsCreated} widget${widgetsCreated > 1 ? 's' : ''} criado${widgetsCreated > 1 ? 's' : ''} com sucesso!`;
+    }
+    if (errors.length > 0) {
+      responseMessage += `\n\n⚠️ Erros: ${errors.join(', ')}`;
+    }
+
+    const aiMessage: ChatMessage = {
+      id: this.generateId(),
+      content: responseMessage,
+      isUser: false,
+      timestamp: new Date(),
+      displayedContent: '',
+      isTyping: true,
+      threadId,
+    };
+    this.messages.push(aiMessage);
+    this.isProcessingAI = false;
+    
+    // Aplica efeito de digitação
+    this.typewriterEffect(aiMessage);
+    
+    // Se modo voz ativo, fala a resposta
+    if (this.isVoiceMode) {
+      this.voiceChatService.speak(responseMessage).catch(() => {
+        // Ignora erros de fala
+      });
+    }
+    
+    this.cdr.detectChanges();
   }
 
   private generateId(): string {

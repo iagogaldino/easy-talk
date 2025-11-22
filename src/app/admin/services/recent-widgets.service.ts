@@ -20,12 +20,16 @@ export class RecentWidgetsService {
   /**
    * Adiciona um widget à lista de recentes
    * Se já houver 15 widgets, remove os mais antigos automaticamente
+   * Remove duplicatas baseado no tipo de widget ou comando (não no ID único)
    */
   addRecentWidget(widget: Widget, command: string, icon?: string): void {
     const recentWidgets = this.getRecentWidgets();
     
-    // Remove se já existir (para evitar duplicatas)
-    const filtered = recentWidgets.filter(rw => rw.widgetId !== widget.id);
+    // Remove se já existir um widget do mesmo tipo ou com o mesmo comando (para evitar duplicatas)
+    // Isso garante que mesmo que o widget tenha um ID único diferente, não haverá duplicatas
+    const filtered = recentWidgets.filter(rw => 
+      rw.widgetType !== widget.type && rw.command !== command
+    );
     
     // Adiciona no início
     const newRecent: RecentWidget = {

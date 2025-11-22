@@ -28,6 +28,7 @@ export class ChatWindowComponent implements AfterViewInit, AfterViewChecked, OnC
   @Input() conversation: Conversation | null = null;
   @Output() messageSent = new EventEmitter<string>();
   @Output() profileRequested = new EventEmitter<void>();
+  @Output() messageDragged = new EventEmitter<Message>();
 
   @ViewChild('messagesContainer', { static: false }) messagesContainer!: ElementRef<HTMLElement>;
 
@@ -76,6 +77,35 @@ export class ChatWindowComponent implements AfterViewInit, AfterViewChecked, OnC
   protected onImageError(_event: Event): void {
     // Se a imagem falhar ao carregar, marca o erro para mostrar o fallback
     this.avatarImageError = true;
+  }
+
+  protected onDragStart(event: DragEvent, message: Message): void {
+    if (!event.dataTransfer) return;
+    
+    // Armazena os dados da mensagem no dataTransfer
+    event.dataTransfer.effectAllowed = 'move';
+    event.dataTransfer.setData('text/plain', message.content || '');
+    event.dataTransfer.setData('application/json', JSON.stringify({
+      id: message.id,
+      content: message.content,
+      author: message.author,
+      type: message.type
+    }));
+    
+    // Adiciona classe visual ao elemento sendo arrastado
+    if (event.target instanceof HTMLElement) {
+      event.target.classList.add('chat-window__message--dragging');
+    }
+    
+    // Emite evento para o componente pai
+    this.messageDragged.emit(message);
+  }
+
+  protected onDragEnd(event: DragEvent): void {
+    // Remove classe visual
+    if (event.target instanceof HTMLElement) {
+      event.target.classList.remove('chat-window__message--dragging');
+    }
   }
 
   ngAfterViewInit(): void {

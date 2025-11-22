@@ -515,5 +515,8 @@ export interface ChatMessage {
   isUser: boolean;
   timestamp: Date;
   widget?: Widget;
+  displayedContent?: string; // Conteúdo exibido progressivamente (efeito typewriter)
+  isTyping?: boolean; // Indica se a mensagem está sendo digitada
+  threadId?: string; // ID do thread de conversa para manter contexto
 }
 

@@ -8,12 +8,16 @@ interface ChatResponse {
   success: boolean;
   response: string;
   threadId?: string;
+  toolCalls?: Array<{
+    id: string;
+    name: string;
+    arguments: Record<string, any>;
+  }>;
 }
 
 /**
  * Serviço de chat com IA
  * Integra com backend que se comunica com OpenAI Assistants API
- * Fallback para respostas mockadas quando backend não disponível
  */
 @Injectable({
   providedIn: 'root',
@@ -23,12 +27,13 @@ export class AIChatService {
   private conversationHistory: Array<{ role: 'user' | 'assistant'; content: string }> = [];
   private readonly MAX_HISTORY = 10;
   private threadId: string | null = null;
-  private readonly apiUrl = `${environment.apiUrl}/chat`;
+  private readonly apiUrl = `${environment.backendUrl}/api/chat`;
 
   /**
    * Envia uma mensagem e recebe resposta da IA
+   * Agora suporta function calling - retorna tool calls se a IA decidir executar funções
    */
-  sendMessage(message: string): Observable<string> {
+  sendMessage(message: string): Observable<ChatResponse> {
     // Adiciona mensagem do usuário ao histórico
     this.conversationHistory.push({ role: 'user', content: message });
     
@@ -50,22 +55,12 @@ export class AIChatService {
         
         // Adiciona resposta ao histórico
         this.conversationHistory.push({ role: 'assistant', content: response.response });
-        return response.response;
+        return response;
       }),
       catchError((error: HttpErrorResponse) => {
-        console.warn('Erro ao comunicar com backend:', error);
-        
-        // Se o erro tem uma mensagem específica do backend, usa ela
-        let errorResponse = 'Erro ao processar sua mensagem.';
-        
-        if (error.error && error.error.message) {
-          errorResponse = error.error.message;
-        } else if (error.message) {
-          errorResponse = error.message;
-        }
-        
-        // Retorna o erro para que o componente possa exibi-lo
-        return throwError(() => new Error(errorResponse));
+        // Propaga o erro com a mensagem do backend se disponível
+        const errorMessage = error.error?.message || error.message || 'Erro ao processar sua mensagem.';
+        return throwError(() => new Error(errorMessage));
       })
     );
   }
@@ -80,8 +75,48 @@ export class AIChatService {
     
     // Notifica o backend para limpar o thread
     this.http.post(`${this.apiUrl}/thread/clear`, {}).subscribe({
-      error: (error) => console.warn('Erro ao limpar thread no backend:', error),
+      error: () => {
+        // Erro silencioso ao limpar thread
+      },
     });
+  }
+
+  /**
+   * Limpa todas as mensagens do backend
+   */
+  clearAllMessages(): Observable<{ success: boolean; message: string }> {
+    return this.http.delete<{ success: boolean; message: string }>(`${this.apiUrl}/messages`).pipe(
+      map((response) => {
+        // Limpa também o histórico local e threadId
+        this.conversationHistory = [];
+        this.threadId = null;
+        return response;
+      }),
+      catchError((error: HttpErrorResponse) => {
+        const errorMessage = error.error?.message || error.message || 'Erro ao limpar mensagens.';
+        return throwError(() => new Error(errorMessage));
+      })
+    );
+  }
+
+  /**
+   * Limpa mensagens de um thread específico
+   */
+  clearThreadMessages(threadId: string): Observable<{ success: boolean; message: string; threadId: string }> {
+    return this.http.delete<{ success: boolean; message: string; threadId: string }>(`${this.apiUrl}/messages/${threadId}`).pipe(
+      map((response) => {
+        // Se for o thread atual, limpa também o histórico local
+        if (this.threadId === threadId) {
+          this.conversationHistory = [];
+          this.threadId = null;
+        }
+        return response;
+      }),
+      catchError((error: HttpErrorResponse) => {
+        const errorMessage = error.error?.message || error.message || 'Erro ao limpar mensagens do thread.';
+        return throwError(() => new Error(errorMessage));
+      })
+    );
   }
 
   /**

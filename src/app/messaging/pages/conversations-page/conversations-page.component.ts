@@ -6,9 +6,9 @@ import { MatDialog } from '@angular/material/dialog';
 import { MatIconModule } from '@angular/material/icon';
 import { MatProgressSpinnerModule } from '@angular/material/progress-spinner';
 import { Observable, filter, combineLatest } from 'rxjs';
-import { map } from 'rxjs/operators';
+import { map, take } from 'rxjs/operators';
 
-import { AssistantContextMessage, Conversation } from '../../models/conversation.model';
+import { AssistantContextMessage, Conversation, Message } from '../../models/conversation.model';
 import { ConversationsService } from '../../services/conversations.service';
 import { CallService } from '../../services/call.service';
 import { ChatListComponent } from '../../components/chat-list/chat-list.component';
@@ -52,6 +52,9 @@ export class ConversationsPageComponent implements OnInit {
   protected isAssistantPanelOpen = false;
   protected showBackToAdmin = false;
   protected hasActiveCall = false;
+  
+  // Mapa para persistir o estado do painel de perfil por conversa
+  private profilePanelState = new Map<string, boolean>();
   protected readonly assistantMessages: AssistantContextMessage[] = [
     {
       id: 'ai-1',
@@ -96,6 +99,15 @@ export class ConversationsPageComponent implements OnInit {
     this.selectedConversationId$ = this.conversationsService.selectedConversationId$;
     this.selectedConversation$ = this.conversationsService.selectedConversation$;
     
+    // Observa mudanças na conversa selecionada para restaurar o estado do painel de perfil
+    this.selectedConversationId$.subscribe((conversationId) => {
+      if (conversationId) {
+        // Restaura o estado do painel de perfil para esta conversa
+        this.isProfilePanelOpen = this.profilePanelState.get(conversationId) ?? false;
+        this.cdr.detectChanges();
+      }
+    });
+    
     // Observa ligações ativas E conversa selecionada para ajustar o layout
     // Só aplica margin-top se houver ligação E a conversa selecionada for diferente da ligação
     combineLatest([
@@ -133,8 +145,16 @@ export class ConversationsPageComponent implements OnInit {
   }
 
   protected handleConversationSelection(conversationId: string): void {
+    // Salva o estado atual do painel de perfil antes de mudar de conversa
+    this.selectedConversationId$.pipe(take(1)).subscribe((currentId) => {
+      if (currentId) {
+        // Salva o estado atual do painel de perfil
+        this.profilePanelState.set(currentId, this.isProfilePanelOpen);
+      }
+    });
+    
     this.conversationsService.selectConversation(conversationId);
-    this.isProfilePanelOpen = false;
+    // Não fecha o painel de perfil aqui - será restaurado pelo observable
     this.isAssistantPanelOpen = false;
   }
 
@@ -145,10 +165,24 @@ export class ConversationsPageComponent implements OnInit {
   protected handleProfileRequested(): void {
     this.isAssistantPanelOpen = false;
     this.isProfilePanelOpen = true;
+    
+    // Salva o estado do painel de perfil para a conversa atual
+    this.selectedConversationId$.pipe(take(1)).subscribe((conversationId) => {
+      if (conversationId) {
+        this.profilePanelState.set(conversationId, true);
+      }
+    });
   }
 
   protected handleProfileClosed(): void {
     this.isProfilePanelOpen = false;
+    
+    // Salva o estado fechado do painel de perfil para a conversa atual
+    this.selectedConversationId$.pipe(take(1)).subscribe((conversationId) => {
+      if (conversationId) {
+        this.profilePanelState.set(conversationId, false);
+      }
+    });
   }
 
   protected handleAssistantToggle(): void {
@@ -158,6 +192,33 @@ export class ConversationsPageComponent implements OnInit {
 
   protected handleAssistantClosed(): void {
     this.isAssistantPanelOpen = false;
+  }
+
+  protected handleFileSubmitted(fileData: { type: 'image' | 'file'; url: string; fileName?: string; fileSize?: string; content?: string }): void {
+    // Obtém a conversa selecionada atual
+    this.selectedConversationId$.pipe(take(1)).subscribe((conversationId) => {
+      if (!conversationId) {
+        console.warn('Nenhuma conversa selecionada');
+        return;
+      }
+
+      // Cria uma nova mensagem mock
+      const newMessage: Message = {
+        id: `msg-${Date.now()}-${Math.random().toString(36).substr(2, 9)}`,
+        author: 'agent',
+        type: fileData.type,
+        content: fileData.content || fileData.fileName,
+        mediaUrl: fileData.url,
+        fileName: fileData.fileName,
+        fileSize: fileData.fileSize,
+        timestamp: new Date().toISOString(),
+        status: 'sent',
+      };
+
+      // Adiciona a mensagem à conversa
+      this.conversationsService.addMessageToConversation(conversationId, newMessage);
+      this.cdr.detectChanges();
+    });
   }
 
   protected handleNavItemClick(item: NavItem): void {
